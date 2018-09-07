@@ -1,0 +1,16 @@
+out
+/node_modules
+/res/yesterday
+/test/tolua/.vs
+/test/tolua/Library
+/test/tolua/Temp
+/test/slua/.vs
+/test/slua/Library
+/test/slua/Temp
+/test/xlua/.vs
+/test/xlua/Library
+/test/xlua/Temp
+*.csproj
+*.sln
+*.pdb
+*.userprefs

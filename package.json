@@ -1,0 +1,408 @@
+{
+	"name": "luaide-lite",
+	"displayName": "luaide-lite",
+	"description": "Lite and free, but more professional.",
+	"license": "MIT",
+	"version": "0.1.6",
+	"repository": {
+		"type": "git",
+		"url": "open/source/soon"
+	},
+	"publisher": "wellshsu",
+	"author": {
+		"name": "wellshsu",
+		"email": "wellshsu@outlook.com"
+	},
+	"engines": {
+		"vscode": "^1.19.0"
+	},
+	"icon": "res/logo.png",
+	"categories": [
+		"Languages",
+		"Debuggers",
+		"Snippets"
+	],
+	"keywords": [
+		"lua",
+		"format",
+		"luaide",
+		"unity",
+		"cocos"
+	],
+	"activationEvents": [
+		"onLanguage:lua",
+		"onLanguage:typescript"
+	],
+	"main": "./out/src/extension",
+	"contributes": {
+		"luaideConfig": {},
+		"breakpoints": [
+			{
+				"language": "lua"
+			}
+		],
+		"debuggers": [
+			{
+				"type": "lua",
+				"label": "LuaDebug",
+				"enableBreakpointsFor": {
+					"languageIds": [
+						"lua"
+					]
+				},
+				"program": "./out/src/debugger/LuaDebug.js",
+				"runtime": "node",
+				"configurationAttributes": {
+					"launch": {
+						"required": [
+							"runtimeType",
+							"localRoot",
+							"printType"
+						],
+						"properties": {
+							"runtimeType": {
+								"type": "string",
+								"default": "Cocos2",
+								"description": "Runtime type\n运行时类型",
+								"enum": [
+									"Cocos2",
+									"Cocos3",
+									"Lua51",
+									"Shell"
+								]
+							},
+							"port": {
+								"type": "number",
+								"description": "Required: remote debugger port\n必填: 远程调试端口",
+								"default": 7003
+							},
+							"mainFile": {
+								"type": "string",
+								"description": "Example: src/main.lua\n例如: src/main.lua 需要启动的lua文件\nCocos中如果指定了commandLine则可以不设定",
+								"default": "${file}"
+							},
+							"exePath": {
+								"type": "string",
+								"description": "Example: Path/to/exe\n填写可执行文件路径",
+								"default": ""
+							},
+							"printType": {
+								"type": "number",
+								"default": 1,
+								"description": "Required: 1-console && sys, 2-console, 3-sys\n必填: 1-控制台和系统输出, 2-控制台输出, 3-系统输出",
+								"enum": [
+									1,
+									2,
+									3
+								]
+							},
+							"printDate": {
+								"type": "boolean",
+								"default": true,
+								"description": "Is add date before log content."
+							},
+							"localRoot": {
+								"type": "string",
+								"default": "${workspaceRoot}"
+							},
+							"commandLine": {
+								"type": "array",
+								"description": "command args\n--命令行参数",
+								"default": [
+									"-workdir ${workspaceRoot}",
+									"-file src/main.lua"
+								]
+							}
+						}
+					},
+					"attach": {
+						"required": [
+							"runtimeType",
+							"localRoot",
+							"printType"
+						],
+						"properties": {
+							"runtimeType": {
+								"type": "string",
+								"default": "Unity",
+								"description": "Runtime type\n运行时类型",
+								"enum": [
+									"Unity",
+									"Cocos2",
+									"Cocos3"
+								]
+							},
+							"localRoot": {
+								"type": "string",
+								"default": "${workspaceRoot}"
+							},
+							"printType": {
+								"type": "number",
+								"default": 1,
+								"description": "Required: 1-console && sys, 2-console, 3-sys\n必填: 1-控制台和系统输出, 2-控制台输出, 3-系统输出",
+								"enum": [
+									1,
+									2,
+									3
+								]
+							},
+							"printDate": {
+								"type": "boolean",
+								"default": true,
+								"description": "Is add date before log content."
+							},
+							"port": {
+								"type": "number",
+								"description": "Required: remote debugger port\n必填: 远程调试端口",
+								"default": 7003
+							}
+						}
+					}
+				},
+				"initialConfigurations": [
+					{
+						"name": "Unity-Remote",
+						"type": "lua",
+						"request": "attach",
+						"runtimeType": "Unity",
+						"localRoot": "${workspaceRoot}",
+						"port": 7003,
+						"printType": 1
+					},
+					{
+						"name": "Cocos-Remote",
+						"type": "lua",
+						"request": "attach",
+						"runtimeType": "Cocos2",
+						"localRoot": "${workspaceRoot}",
+						"port": 7003,
+						"printType": 1
+					},
+					{
+						"name": "Cocos-Launch",
+						"type": "lua",
+						"request": "launch",
+						"runtimeType": "Cocos2",
+						"localRoot": "${workspaceRoot}",
+						"mainFile": "src/main.lua",
+						"commandLine": [
+							"-workdir ${workspaceRoot}",
+							"-file src/main.lua"
+						],
+						"port": 7003,
+						"exePath": "Path/to/exe",
+						"printType": 1
+					},
+					{
+						"name": "Lua51-Launch",
+						"type": "lua",
+						"request": "launch",
+						"runtimeType": "Lua51",
+						"localRoot": "${workspaceRoot}",
+						"mainFile": "main",
+						"port": 7003,
+						"printType": 1
+					}
+				]
+			}
+		],
+		"snippets": [
+			{
+				"language": "lua",
+				"path": "./res/snippets.json"
+			}
+		],
+		"commands": [
+			{
+				"command": "luaide-lite.toUpperCase",
+				"title": "To UpperCase"
+			},
+			{
+				"command": "luaide-lite.toLowerCase",
+				"title": "To LowerCase"
+			},
+			{
+				"command": "luaide-lite.about",
+				"title": "About luaide-lite"
+			},
+			{
+				"command": "luaide-lite.formatFiles",
+				"title": "Lua/Format File(s)"
+			},
+			{
+				"command": "luaide-lite.createTemplate",
+				"title": "Lua/New Template"
+			},
+			{
+				"command": "luaide-lite.openRes",
+				"title": "Lua/Open Res"
+			},
+			{
+				"command": "luaide-lite.convertTsFile",
+				"title": "Lua/To Typescript"
+			},
+			{
+				"command": "luaide-lite.convertTsText",
+				"title": "To Typescript"
+			}
+		],
+		"menus": {
+			"explorer/context": [
+				{
+					"command": "luaide-lite.formatFiles",
+					"group": "luaide-lite"
+				},
+				{
+					"command": "luaide-lite.createTemplate",
+					"group": "luaide-lite"
+				},
+				{
+					"command": "luaide-lite.openRes",
+					"group": "luaide-lite"
+				}
+			],
+			"editor/context": [
+				{
+					"command": "luaide-lite.toUpperCase",
+					"group": "luaide-lite",
+					"when": "editorHasSelection && editorLangId == lua"
+				},
+				{
+					"command": "luaide-lite.toLowerCase",
+					"group": "luaide-lite",
+					"when": "editorHasSelection && editorLangId == lua"
+				},
+				{
+					"command": "luaide-lite.convertTsText",
+					"group": "luaide-lite",
+					"when": "editorHasSelection"
+				}
+			]
+		},
+		"keybindings": [
+			{
+				"command": "luaide-lite.toUpperCase",
+				"key": "CTRL+L CTRL+U",
+				"when": "editorHasSelection && editorLangId == lua"
+			},
+			{
+				"command": "luaide-lite.toLowerCase",
+				"key": "CTRL+L CTRL+L",
+				"when": "editorHasSelection && editorLangId == lua"
+			},
+			{
+				"command": "luaide-lite.convertTsText",
+				"key": "CTRL+K CTRL+V",
+				"when": "editorHasSelection"
+			}
+		],
+		"configuration": {
+			"type": "object",
+			"title": "Luaide-lite Settings",
+			"properties": {
+				"luaide-lite.enableHighlight": {
+					"type": "boolean",
+					"default": true,
+					"description": "Highlight global var.\n全局变量高亮显示."
+				},
+				"luaide-lite.highlightNormal": {
+					"type": "string",
+					"default": "#2B91AF",
+					"description": "Light theme highlitht color.\n白色系主题高亮的颜色."
+				},
+				"luaide-lite.highlightDark": {
+					"type": "string",
+					"default": "#00D6AA",
+					"description": "Dark theme highlitht color.\n黑色系主题高亮的颜色."
+				},
+				"luaide-lite.enableFormat": {
+					"type": "boolean",
+					"default": true,
+					"description": "Enable internal format tool.\n是否使用格式化."
+				},
+				"luaide-lite.luaOperatorCheck": {
+					"type": "boolean",
+					"default": true,
+					"description": "Set false if you override operator in your code.\n是否解析符号重载."
+				},
+				"luaide-lite.luaFunArgCheck": {
+					"type": "boolean",
+					"default": true,
+					"description": "Check function args, 'set true' doesn't allow same arg identifier.\n是否解析函数的参数."
+				},
+				"luaide-lite.moduleFunNestingCheck": {
+					"type": "boolean",
+					"default": false,
+					"description": "Check module function nesting.\n模块方法嵌套检查, 如果在一个方法中出现另外一个模块方法会认为是错误的."
+				},
+				"luaide-lite.templateDefine": {
+					"type": "array",
+					"default": [],
+					"description": "Replace specific var in template file.\n模板值定义, 用于创建模板文件时全局替换.",
+					"items": {
+						"type": "object"
+					}
+				},
+				"luaide-lite.templateDir": {
+					"type": "string",
+					"default": "",
+					"description": "Template file directory, support recursive.\n模板文件目录."
+				},
+				"luaide-lite.exclude": {
+					"type": "array",
+					"default": [],
+					"description": "Exclude specific file(s) or folder(s).\n需要排除的文件夹, 这些文件夹将不会被解析.",
+					"items": {
+						"type": "string"
+					}
+				},
+				"luaide-lite.formatHex": {
+					"type": "boolean",
+					"default": true,
+					"description": "Convert hex to decimal.\n是否格式化十六进制的数字."
+				},
+				"luaide-lite.numberRadix": {
+					"type": "array",
+					"default": [
+						10
+					],
+					"description": "Display number radix when debug number value.\n调试时需要显示的数字进制格式, 例如二进制, 十进制等."
+				},
+				"luaide-lite.enableDiagnostic": {
+					"type": "boolean",
+					"default": true,
+					"description": "Enable code diagnostic.\n是否启用代码分析, 如果禁用将不会有错误提示."
+				},
+				"luaide-lite.typescriptDefine": {
+					"type": "array",
+					"default": [],
+					"description": "Replace specific var in typescript content.\n转换为Typescript时的模板值定义, 用于全局替换转化内容.",
+					"items": {
+						"type": "object"
+					}
+				}
+			}
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "tsc -p ./",
+		"compile": "tsc -watch -p ./",
+		"postinstall": "node ./node_modules/vscode/bin/install",
+		"test": "node ./node_modules/vscode/bin/test"
+	},
+	"devDependencies": {
+		"typescript": "^2.0.3",
+		"vscode": "^1.1.10",
+		"mocha": "^2.3.3",
+		"@types/node": "^6.0.40",
+		"@types/mocha": "^2.2.32",
+		"@types/socket.io": "^1.4.27",
+		"@types/socket.io-client": "^1.4.27"
+	},
+	"dependencies": {
+		"vscode-debugadapter": "^1.19.0",
+		"vscode-debugprotocol": "^1.19.0",
+		"vscode-languageclient": "^3.1.0",
+		"rd": "^1.1.2"
+	}
+}
