@@ -1160,11 +1160,12 @@ export class TextFormat {
   }
 
   private isIdentifierStart(charCode): boolean {
-    return (charCode >= 65 && charCode <= 90) || (charCode >= 97 && charCode <= 122) || 95 === charCode;
+    //u4e00-u9fa5 (中文)
+    return (charCode >= 65 && charCode <= 90) || (charCode >= 97 && charCode <= 122) || 95 === charCode || (charCode >= 0x4e00 && charCode <= 0x9fa5);
   }
 
   private isIdentifierPart(charCode): boolean {
-    return (charCode >= 65 && charCode <= 90) || (charCode >= 97 && charCode <= 122) || 95 === charCode || (charCode >= 48 && charCode <= 57);
+    return (charCode >= 65 && charCode <= 90) || (charCode >= 97 && charCode <= 122) || 95 === charCode || (charCode >= 48 && charCode <= 57) || (charCode >= 0x4e00 && charCode <= 0x9fa5);
   }
 
   private isDecDigit(charCode) {
