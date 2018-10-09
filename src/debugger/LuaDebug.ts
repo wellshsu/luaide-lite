@@ -3,8 +3,8 @@ import { DebugProtocol } from 'vscode-debugprotocol'
 import { readFileSync } from 'fs'
 import { basename } from 'path'
 import child_process = require('child_process')
-var fs = require('fs')
-var ospath = require('path')
+const fs = require('fs')
+const ospath = require('path')
 var os = require('os')
 import { BPMgr } from "./BPMgr"
 import { EventEmitter } from 'events'
@@ -13,6 +13,7 @@ import { ScopeMgr, LuaDebugVarInfo } from './ScopeMgr'
 import { ExecMgr } from "./ExecMgr"
 
 export enum DebugMode {
+
 	launch,
 	attach
 }
@@ -31,6 +32,7 @@ export class LuaDebug extends DebugSession {
 	public exConfig: any
 	private scopeMgr: ScopeMgr
 	private pathMaps: Map<string, Array<string>>
+	private lastStackReqTime = -1
 
 	get breakPointData(): BPMgr {
 		return this.bpMgr
@@ -107,6 +109,7 @@ export class LuaDebug extends DebugSession {
 		}
 		this.printType = args.printType
 		var proc = new ExecMgr(args, this)
+
 		this.netMgr = new NetMgr(this, DebugMode.launch, args)
 		this.scopeMgr = new ScopeMgr(this.netMgr, this)
 		//注册事件
@@ -188,37 +191,48 @@ export class LuaDebug extends DebugSession {
 	}
 
 	protected stackTraceRequest(response: DebugProtocol.StackTraceResponse, args: DebugProtocol.StackTraceArguments): void {
-		var stackInfos: Array<any> = this.scopeMgr.getStackInfos()
-		const frames = new Array<StackFrame>()
-		for (var i = 0; i < stackInfos.length; i++) {
-			var stacckInfo = stackInfos[i]
-		}
-		for (var i = 0; i < stackInfos.length; i++) {
-			var stacckInfo = stackInfos[i];
-			var path: string = stacckInfo.src
-			if (path.endsWith("/lua")) {
-				path = path.replace("/lua", this.fileExtname)
-			}
-			else if (path == "=[C]") {
-				path = ""
-			} else {
-				if (path.indexOf(this.fileExtname) == -1) {
-					path = path + this.fileExtname
+		let currentTime = Date.now()
+		if ((currentTime - this.lastStackReqTime) > 500) {
+			this.lastStackReqTime = currentTime
+			var stackInfos: Array<any> = this.scopeMgr.getStackInfos()
+			const frames = new Array<StackFrame>()
+			for (var i = 0; i < stackInfos.length; i++) {
+				var info = stackInfos[i];
+				var _file: string = info.src
+				if (_file.endsWith("/lua")) {
+					_file = _file.replace("/lua", this.fileExtname)
 				}
-				path = this.convertToServerPath(path)
-			}
-			var tname = path.substring(path.lastIndexOf("/") + 1)
-			var line = stacckInfo.currentline
+				else if (_file == "=[C]") {
+					_file = ospath.join(os.tmpdir(), "=[C]")
+					_file = _file.replace(/\\/g, "/")
+					try {
+						if (fs.existsSync(_file)) {
+							fs.unlinkSync(_file)
+						}
+						let json = JSON.stringify(info)
+						fs.writeFileSync(_file, json)
+					} catch (e) { }
+				} else {
+					if (_file.indexOf(this.fileExtname) == -1) {
+						_file = _file + this.fileExtname
+					}
+					_file = this.convertToServerPath(_file)
+				}
+				if (_file != null && _file != "") {
+					var tname = _file.substring(_file.lastIndexOf("/") + 1)
+					var line = info.currentline
 
-			frames.push(new StackFrame(i, stacckInfo.scoreName,
-				new Source(tname, path),
-				line))
+					frames.push(new StackFrame(i, info.scoreName,
+						new Source(tname, _file),
+						line))
+				}
+			}
+			response.body = {
+				stackFrames: frames,
+				totalFrames: frames.length
+			}
+			this.sendResponse(response)
 		}
-		response.body = {
-			stackFrames: frames,
-			totalFrames: frames.length
-		}
-		this.sendResponse(response)
 	}
 
 	protected scopesRequest(response: DebugProtocol.ScopesResponse, args: DebugProtocol.ScopesArguments): void {

@@ -6,6 +6,7 @@
 * Email: wellshsu@outlook.com
 * QQ Group(QQ群): 621598820
 * Location: Nachang, Jiangxi
+* Github: https://github.com/hsu2017/luaide-lite
 
 # Features | 功能
 * 标准格式化: [稳定] 与EmmyLua格式化结果一致, 参考VS的格式化标准, 设置'enableFormat'以启用或禁用格式化, 你可以选择其他的格式化库, 例如vscode-lua.
@@ -34,18 +35,20 @@
 * Conditional breakpoint: [Stable] support expression and hit count.
 
 # Note that | 注意事项
-* luaide-lite将在0.1.6版本开源, 各位同学可自行修改, 引用请注明出处.
+* luaide-lite现已开源, 各位同学可自行修改, 引用请注明出处.
 * 有部分同学反馈插件不流畅以及符号重复定义等未知问题, 请检查一下插件列表, 确保其他lua插件是禁用的.
 * 由于作者近期个人事务较多, 版本更新较慢, 请各位谅解, 有严重问题的可以告知我, 我会尽量安排时间修复.
 * 由于新版本vscode会将有错误的文件标记为红色, 导致部分同学的工程有很多报错, 目前已经修复大部分解析问题, 如果代码分析还存在问题, 你可以设置 "luaide-lite.enableDiagnostic" = false 直接禁用代码分析.
-* luaide-lite will open source @ 0.1.6.
+* luaide-lite is now open source.
 * Please ensure that other lua extensions are diabled to avoid some unknown issues.
 * The version upgrade will be slowed down caused by many personal matters.
 * The new version of vscode will mark file red if error occurs in it, i've fixed many code parse issues, if error still occurs, please set "luaide-lite.enableDiagnostic" = false directly.
 
 # 0.1.6 [See Changelog] | 详细请查阅版本记录
 * 新增 'To Typescript' 转换功能, 你可以使用此功能将Lua代码转换为Typescript.
+* 紧急修复在 VSCode 最新版本 1.28.0 上无法查看堆栈的问题.
 * Add 'To Typescript', use it to translate lua to typescript.
+* Fix stacktrace request doesn't work on VSCode 1.28.0.
 
 # 0.1.5
 * 修改匿名方法名称 TempFun_line_start -> Anonymous(line:start).
@@ -96,11 +99,11 @@
 * Remove join QQ Group(621598820) hint.
 
 # 0.1.2
-* 紧急修复在 vscode 最新版本 1.20.0 上禁用断点依然会命中的问题, 经验证, 新版本的vscode路径盘符有时是大写的有时是小写的.
+* 紧急修复在 VSCode 最新版本 1.20.0 上禁用断点依然会命中的问题, 经验证, 新版本的vscode路径盘符有时是大写的有时是小写的.
 * 修复在 Win7 以及 OS X 上断点次数无效的问题, 经验证这是vscode的问题, 已经反馈至官方.
 * 修复F5跳到下一个断点时, print无法输出至控制台的问题.
 * 校正若干README.md和CHANGELOG.md中的表达错误.
-* Fix disable break point doesn't work on vscode 1.20.0.
+* Fix disable break point doesn't work on VSCode 1.20.0.
 * Fix hit count doesn't work on Win7 and OS X, it's caused by a vscode issue.
 * Fix can not print log to console when press F5 continue next break point.
 * Correct many incorrect expressions in README.md and CHANGELOG.md.
