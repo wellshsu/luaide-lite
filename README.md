@@ -266,11 +266,6 @@
 * EmmyLua: https://emmylua.github.io/
 * kangping.luaide: https://github.com/k0204/LuaIde/
 
-# Thanks for kangping.luaide | 致谢kangping.luaide
-* Author: kangping
-* Marketplace: https://marketplace.visualstudio.com/items?itemName=kangping.luaide
-* Github: https://github.com/k0204/LuaIde/
-
 # For Developer | 开发者
 * npm install
 * npm install -g vsce

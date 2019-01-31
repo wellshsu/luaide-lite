@@ -1,6 +1,8 @@
 # 0.1.6 [2018.05.22]
 * 新增 'To Typescript' 转换功能, 你可以使用此功能将Lua代码转换为Typescript.
+* 紧急修复在 VSCode 最新版本 1.28.0 上无法查看堆栈的问题.
 * Add 'To Typescript', use it to translate lua to typescript.
+* Fix stacktrace request doesn't work on VSCode 1.28.0.
 
 # 0.1.5 [2018.03.23]
 * 修改匿名方法名称 TempFun_line_start -> Anonymous(line:start).
