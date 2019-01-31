@@ -3,7 +3,6 @@
 import vscode = require('vscode')
 import { Range } from 'vscode-languageclient'
 import { LParse } from '../parser/LParse'
-import { Helper } from '../context/Helper'
 import { LCItem } from "../provider/LCItem"
 
 export class LFrag {

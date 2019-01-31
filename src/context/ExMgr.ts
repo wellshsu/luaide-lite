@@ -1,7 +1,8 @@
 'use strict';
 
 import * as path from 'path'
-import { workspace, Disposable, ExtensionContext, window, TextDocumentChangeEvent } from 'vscode'
+import * as fs from 'fs'
+import { ExtensionContext } from 'vscode'
 import vscode = require('vscode')
 import { UpperLower } from '../formater/UpperLower'
 import { FileFormat } from "../formater/FileFormat"
@@ -14,7 +15,8 @@ export class EXMgr {
     public static extensionID = "wellshsu.luaide-lite"
     public static extensionName = "luaide-lite"
     public static slogan = "Lite and free, but more professional."
-    public static LUA_MODE: vscode.DocumentFilter = { language: 'lua', scheme: 'file' }
+    public static LUA_MODE: vscode.DocumentFilter = { language: "lua", scheme: "file" }
+    public static LANGUAGE_ID = "lua";
 
     public static luaOperatorCheck: boolean
     public static luaFunArgCheck: boolean
@@ -35,9 +37,17 @@ export class EXMgr {
     public static formatHex: boolean
     public static enableDiagnostic: boolean
     public static typescriptDefine: Map<string, string>
+    public static core: string = "emmy"
+    public static javahome: string
+    public static lightParameter: string = "#565656"
+    public static lightGlobal: string = "#2B91AF"
+    public static lightAnnotation: string = "#2B91AF"
+    public static darkParameter: string = "#FFFFFF"
+    public static darkGlobal: string = "#00D6AA"
+    public static darkAnnotation: string = "#00D6AA"
 
+    public static isLegacy: boolean = false
     public static focused: boolean
-
     public static Bar: vscode.StatusBarItem;
     public static Commands = [
         { label: "luaide-lite.toUpperCase", desc: 'Shift chars to uppercase', func: UpperLower.toUpperCase },
@@ -96,6 +106,14 @@ export class EXMgr {
         EXMgr.normalHighlightColor = config.get<string>("highlightNormal")
         EXMgr.darkHighlightColor = config.get<string>("highlightDark")
         EXMgr.enableFormat = config.get<boolean>("enableFormat")
+        EXMgr.core = config.get<string>("core")
+        EXMgr.javahome = config.get<string>("javahome")
+        EXMgr.lightParameter = config.get<string>("theme.light.parameter")
+        EXMgr.lightGlobal = config.get<string>("theme.light.global")
+        EXMgr.lightAnnotation = config.get<string>("theme.light.annotation")
+        EXMgr.darkParameter = config.get<string>("theme.dark.parameter")
+        EXMgr.darkGlobal = config.get<string>("theme.dark.global")
+        EXMgr.darkAnnotation = config.get<string>("theme.dark.annotation")
         // single script root.
         var scriptRoot = vscode.workspace.rootPath.replace(/\\/g, "/");
         scriptRoot = scriptRoot.replace(new RegExp("/", "gm"), ".")
@@ -123,6 +141,32 @@ export class EXMgr {
         }
         if (EXMgr.enableFormat == null) {
             EXMgr.enableFormat = true
+        }
+        if (EXMgr.core == null) {
+            EXMgr.core = "emmy"
+        }
+        if (EXMgr.core == "emmy") {
+            EXMgr.isLegacy = EXMgr.getJavaExe() == null ? true : false
+        } else {
+            EXMgr.isLegacy = true
+        }
+        if (EXMgr.lightParameter == null) {
+            EXMgr.lightParameter = "#565656"
+        }
+        if (EXMgr.lightGlobal == null) {
+            EXMgr.lightGlobal = "#2B91AF"
+        }
+        if (EXMgr.lightAnnotation == null) {
+            EXMgr.lightAnnotation = "#2B91AF"
+        }
+        if (EXMgr.darkParameter == null) {
+            EXMgr.darkParameter = "#FFFFFF"
+        }
+        if (EXMgr.darkGlobal == null) {
+            EXMgr.darkGlobal = "#00D6AA"
+        }
+        if (EXMgr.darkAnnotation == null) {
+            EXMgr.darkAnnotation = "#00D6AA"
         }
 
         EXMgr.templateDir = config.get<string>("templateDir")
@@ -192,4 +236,31 @@ export class EXMgr {
         }
     }
 
+    public static getJavaExe(): string {
+        try {
+            if (process.platform == "win32") {
+                if (EXMgr.javahome != null) {
+                    return path.join(EXMgr.javahome, "bin/java.exe")
+                }
+                if ("JAVA_HOME" in process.env) {
+                    let javaHome = <string>process.env.JAVA_HOME
+                    let javaPath = path.join(javaHome, "bin/java.exe")
+                    return javaPath
+                }
+                if ("PATH" in process.env) {
+                    let PATH = <string>process.env.PATH
+                    let paths = PATH.split(";")
+                    let pathCount = paths.length
+                    for (let i = 0; i < pathCount; i++) {
+                        let javaPath = path.join(paths[i], "bin/java.exe")
+                        if (fs.existsSync(javaPath)) {
+                            return javaPath
+                        }
+                    }
+                }
+            }
+        } catch{
+        }
+        return null
+    }
 }

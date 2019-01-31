@@ -1,19 +1,15 @@
 import { DebugSession, InitializedEvent, TerminatedEvent, StoppedEvent, OutputEvent, Event, Thread, StackFrame, Scope, Source, Breakpoint } from 'vscode-debugadapter'
 import { DebugProtocol } from 'vscode-debugprotocol'
-import { readFileSync } from 'fs'
-import { basename } from 'path'
 import child_process = require('child_process')
 const fs = require('fs')
 const ospath = require('path')
 var os = require('os')
 import { BPMgr } from "./BPMgr"
-import { EventEmitter } from 'events'
 import { NetMgr, LuaDebuggerEvent, ClientStatus } from './NetMgr'
 import { ScopeMgr, LuaDebugVarInfo } from './ScopeMgr'
 import { ExecMgr } from "./ExecMgr"
 
 export enum DebugMode {
-
 	launch,
 	attach
 }

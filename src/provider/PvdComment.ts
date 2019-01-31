@@ -7,7 +7,7 @@ import { Helper } from '../context/Helper'
 export class PvdComment {
 
     public static checkComment(event: vscode.TextDocumentChangeEvent): boolean {
-        if (event.document.languageId == "lua") {
+        if (event.document.languageId == EXMgr.LANGUAGE_ID) {
             if (event.contentChanges.length == 1) {
                 if (event.contentChanges[0].text == "-") {
                     var curentLine = event.contentChanges[0].range.start.line

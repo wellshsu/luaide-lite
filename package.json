@@ -3,10 +3,13 @@
 	"displayName": "luaide-lite",
 	"description": "Lite and free, but more professional.",
 	"license": "MIT",
-	"version": "0.1.6",
+	"version": "0.1.7",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/hsu2017/luaide-lite"
+	},
+	"bugs": {
+		"url": "https://github.com/hsu2017/luaide-lite/issues"
 	},
 	"publisher": "wellshsu",
 	"author": {
@@ -14,11 +17,11 @@
 		"email": "wellshsu@outlook.com"
 	},
 	"engines": {
-		"vscode": "^1.19.0"
+		"vscode": "^1.27.0"
 	},
 	"icon": "res/logo.png",
 	"categories": [
-		"Languages",
+		"Programming Languages",
 		"Debuggers",
 		"Snippets"
 	],
@@ -35,7 +38,6 @@
 	],
 	"main": "./out/src/extension",
 	"contributes": {
-		"luaideConfig": {},
 		"breakpoints": [
 			{
 				"language": "lua"
@@ -212,6 +214,25 @@
 				"path": "./res/snippets.json"
 			}
 		],
+		"languages": [
+			{
+				"id": "lua",
+				"extensions": [
+					".lua"
+				],
+				"aliases": [
+					"luaide-lite"
+				],
+				"configuration": "./res/languages.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "lua",
+				"scopeName": "source.lua",
+				"path": "./res/grammars.json"
+			}
+		],
 		"commands": [
 			{
 				"command": "luaide-lite.toUpperCase",
@@ -298,8 +319,18 @@
 		],
 		"configuration": {
 			"type": "object",
-			"title": "Luaide-lite Settings",
+			"title": "luaide-lite",
 			"properties": {
+				"luaide-lite.core": {
+					"type": "string",
+					"default": "emmy",
+					"description": "emmy-'emmylua core',legacy-'old core'.\n设置代码提示版本,emmy-'emmylua版本',legacy-'旧版本'."
+				},
+				"luaide-lite.javahome": {
+					"type": "string",
+					"default": null,
+					"description": "JAVA HOME.\nJava环境根目录."
+				},
 				"luaide-lite.enableHighlight": {
 					"type": "boolean",
 					"default": true,
@@ -308,12 +339,42 @@
 				"luaide-lite.highlightNormal": {
 					"type": "string",
 					"default": "#2B91AF",
-					"description": "Light theme highlitht color.\n白色系主题高亮的颜色."
+					"description": "Light theme highlight color.\n白色系主题高亮的颜色."
 				},
 				"luaide-lite.highlightDark": {
 					"type": "string",
 					"default": "#00D6AA",
-					"description": "Dark theme highlitht color.\n黑色系主题高亮的颜色."
+					"description": "Dark theme highlight color.\n黑色系主题高亮的颜色."
+				},
+				"luaide-lite.theme.light.parameter": {
+					"type": "string",
+					"default": "#565656",
+					"description": "Light theme parameter color.\n白色系主题参数颜色."
+				},
+				"luaide-lite.theme.light.global": {
+					"type": "string",
+					"default": "#2B91AF",
+					"description": "Light theme global color.\n白色系主题全局变量颜色."
+				},
+				"luaide-lite.theme.light.annotation": {
+					"type": "string",
+					"default": "#2B91AF",
+					"description": "Light theme annotation color.\n白色系主题注解颜色."
+				},
+				"luaide-lite.theme.dark.parameter": {
+					"type": "string",
+					"default": "#FFFFFF",
+					"description": "Dark theme parameter color.\n黑色系主题参数颜色."
+				},
+				"luaide-lite.theme.dark.global": {
+					"type": "string",
+					"default": "#00D6AA",
+					"description": "Dark theme parameter color.\n黑色系主题参数颜色."
+				},
+				"luaide-lite.theme.dark.annotation": {
+					"type": "string",
+					"default": "#00D6AA",
+					"description": "Dark theme annotation color.\n黑色系主题注解颜色."
 				},
 				"luaide-lite.enableFormat": {
 					"type": "boolean",
@@ -400,9 +461,9 @@
 		"@types/socket.io-client": "^1.4.27"
 	},
 	"dependencies": {
-		"vscode-debugadapter": "^1.19.0",
-		"vscode-debugprotocol": "^1.19.0",
-		"vscode-languageclient": "^3.1.0",
+		"vscode-languageclient": "5.1.0",
+		"vscode-debugadapter": "1.31.0",
+		"vscode-debugprotocol": "1.31.0",
 		"rd": "^1.1.2"
 	}
 }

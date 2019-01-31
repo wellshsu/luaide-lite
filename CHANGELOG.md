@@ -1,3 +1,9 @@
+# 0.1.7 [2019.01.31]
+* 新增 'luaide-lite.core' 设置, 你可以指定不同版本的代码解析工具, emmy-使用emmylua库解析工程, legacy-使用既有版本解析工程.
+* 修改插件图标, 增加辨识度.
+* Add 'luaide-lite.core', use it to translate lua to typescript.
+* Modify plugin's logo.
+
 # 0.1.6 [2018.05.22]
 * 新增 'To Typescript' 转换功能, 你可以使用此功能将Lua代码转换为Typescript.
 * 紧急修复在 VSCode 最新版本 1.28.0 上无法查看堆栈的问题.

@@ -5,19 +5,36 @@
 * Author: Wells Hsu
 * Email: wellshsu@outlook.com
 * QQ Group(QQ群): 621598820
-* Location: Nachang, Jiangxi
 * Github: https://github.com/hsu2017/luaide-lite
 
-# Features | 功能
-* 标准格式化: [稳定] 与EmmyLua格式化结果一致, 参考VS的格式化标准, 设置'enableFormat'以启用或禁用格式化, 你可以选择其他的格式化库, 例如vscode-lua.
+# Features | 功能特性
+
+## 【代码编写】
+* 标准格式化: 与 IntelliJ IDEA 平台的 EmmyLua 格式化结果一致, 参考VS的格式化标准, 大文件格式化更快.
+* 批量格式化: 选中文件/文件夹, 点击'Lua/Format File(s)'以格式化这些文件.
+* 代码注解: 引用自 EmmyLua, 使用参考 https://emmylua.github.io/annotation.html
+* 智能提示: 支持查找引用, 重构, 定义跳转, 文件符号, 变量颜色高亮等.
+
+## 【代码调试】
+* 多平台调试: 支持cocos, lua51, tolua, slua, xlua 等, 调试示例在群文件中, 环境配置请参考各示例的README.md文件.
+* 单文件调试: 支持使用Lua51调试demo.
+* 条件断点: 支持设置表达式以及断点次数.
+
+## 【辅助功能】
+* 解析库切换: 设置 'luaide-lite.core' 以指定代码解析工具, emmy-使用emmylua库解析工程, legacy-使用既有版本解析工程.
+* To Typescript: 将Lua代码转换为Typescript.
+* 模板文件: 在设置中添加 'templateDir' 和 'templateDefine' 以指定模板文件目录以及全局文本替换字段, 在工程结构目录右键选择 'Lua/New Template' 以创建模板文件
+
+# Fulllist | 完整列表
+* 标准格式化: [稳定] 与 IntelliJ IDEA 平台的 EmmyLua 格式化结果一致, 参考VS的格式化标准, 设置'enableFormat'以启用或禁用格式化, 你可以选择其他的格式化库, 例如vscode-lua.
 * 远程调试: [稳定][继承] 使用Socket传送断点数据, 调试示例在群文件中, 包含cocos, lua51, tolua, slua, xlua 等, 环境配置请参考各示例的README.md文件.
 * 代码检查: [稳定][继承] 标准的代码检查.
 * 智能代码提示: [稳定][继承] 代码片段, 代码完成提示, 全局提示, 定义跳转.
-* 注解: [测试][未完成] 引用自 EmmyLua and LDoc, ---@type 可用.
-* 全局高亮: [稳定] 将全局变量高亮显示, 代码编辑时对全局变量更敏感, 设置中的'enableHighlight'等可以选择是否启用高亮以及设置高亮颜色.
+* 注解: [稳定][继承] 引用自 EmmyLua and LDoc.
+* 全局高亮: [稳定][继承] 将全局变量高亮显示, 代码编辑时对全局变量更敏感, 设置中的'enableHighlight'等可以选择是否启用高亮以及设置高亮颜色.
 * 批量格式化: [稳定] 选中文件/文件夹, 点击'Lua/Format File(s)'以格式化这些文件.
-* 查找所有引用: [测试] 选中代码片段 Alt + F2 或 右键 Fild All References.
-* 代码重构: [测试] 选中代码片段Ctrl + R + R 重命名所有文件中相关的标识符.
+* 查找所有引用: [稳定][继承] 选中代码片段 Alt + F2 或 右键 Fild All References.
+* 代码重构: [稳定][继承] 选中代码片段Ctrl + R + R 重命名所有文件中相关的标识符.
 * 模板文件: [稳定] 你可以在设置中添加 'templateDir' 和 'templateDefine' 以指定模板文件目录以及全局文本替换字段, 在工程结构目录右键选择 'Lua/New Template' 以创建模板文件.
 * 单文件调试: [稳定] 支持使用Lua51调试demo.
 * 条件断点: [稳定] 支持设置表达式以及断点次数.
@@ -25,12 +42,12 @@
 * Remote Debug: [Stable][Legacy] Use socket to transfer breakinfo.
 * Code Check: [Stable][Legacy] Standard lua code check.
 * Smart Code: [Stable] Snippets, Syntaxes, Hint.
-* Annotation: [Beta][Uncomplete] Refers from EmmyLua and LDoc.
-* _G Highlight: [Beta] Highlight global vars.
+* Annotation: [Stable][Legacy] Refers from EmmyLua and LDoc.
+* _G Highlight: [Stable][Legacy] Highlight global vars.
 * Reformat Code: [Stable] Batch format files.
-* Find All References: [Beta] Find references from all files.
-* Refactor Code: [Beta] Rename all relative symbols.
-* Template: 'templateDir' and 'templateDefine' are supported in settings, focus project explorer and right click then use 'Lua/New Template' to create template file.
+* Find All References: [Stable][Legacy] Find references from all files.
+* Refactor Code: [Stable][Legacy] Rename all relative symbols.
+* Template: [Stable] 'templateDir' and 'templateDefine' are supported in settings, focus project explorer and right click then use 'Lua/New Template' to create template file.
 * Lua51 Debug: [Stable] support use lua51 to debug single demo.
 * Conditional breakpoint: [Stable] support expression and hit count.
 
@@ -44,7 +61,13 @@
 * The version upgrade will be slowed down caused by many personal matters.
 * The new version of vscode will mark file red if error occurs in it, i've fixed many code parse issues, if error still occurs, please set "luaide-lite.enableDiagnostic" = false directly.
 
-# 0.1.6 [See Changelog] | 详细请查阅版本记录
+# 0.1.7 [See Changelog] | 详细请查阅版本记录
+* 新增 'luaide-lite.core' 设置, 你可以指定不同版本的代码解析工具, emmy-使用emmylua库解析工程, legacy-使用既有版本解析工程.
+* 修改插件图标, 增加辨识度.
+* Add 'luaide-lite.core', use it to translate lua to typescript.
+* Modify plugin's logo.
+
+# 0.1.6
 * 新增 'To Typescript' 转换功能, 你可以使用此功能将Lua代码转换为Typescript.
 * 紧急修复在 VSCode 最新版本 1.28.0 上无法查看堆栈的问题.
 * Add 'To Typescript', use it to translate lua to typescript.
@@ -272,5 +295,5 @@
 * vsce package
 * vsce publish
 * vsce unpublish (publisher name).(extension name)
-* code --install-extension luaide-lite-0.1.6.vsix
+* code --install-extension luaide-lite-0.1.7.vsix
 * https://marketplace.visualstudio.com/manage/
