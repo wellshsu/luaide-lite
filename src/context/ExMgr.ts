@@ -34,6 +34,7 @@ export class EXMgr {
     public static templateDir: string
     public static templateDefine: Map<string, string>
     public static excludes: Array<string>
+    public static excludesRegex: Array<string>
     public static formatHex: boolean
     public static enableDiagnostic: boolean
     public static typescriptDefine: Map<string, string>
@@ -194,6 +195,14 @@ export class EXMgr {
                 EXMgr.excludes.push(path.normalize(path.join(vscode.workspace.rootPath, v)))
             })
         }
+        EXMgr.excludesRegex = new Array<string>()
+        var excludesRegexs: Array<string> = config.get<Array<string>>("excludesRegex");
+        if (excludesRegexs) {
+            excludesRegexs.forEach((v) => {
+                EXMgr.excludesRegex.push(v);
+            })
+        }
+
 
         EXMgr.formatHex = config.get<boolean>("formatHex")
         if (EXMgr.formatHex == null) {
@@ -231,7 +240,17 @@ export class EXMgr {
                 }
             }
             return false
-        } else {
+        }
+        else if (EXMgr.excludesRegex && EXMgr.excludesRegex.length > 0) {
+            for (var i = 0; i < EXMgr.excludesRegex.length; i++) {
+                var exclude = EXMgr.excludesRegex[i]
+                if (file.search(exclude) > -1) {
+                    return true
+                }
+            }
+            return false
+        }
+        else {
             return false
         }
     }
