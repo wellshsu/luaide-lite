@@ -44,6 +44,9 @@ export class ExecMgr {
             shell: true
         };
         var luaExePath = path.join(fileInfos[0], "res/debug", process.platform, "lua");
+        if(this.args.exePath){
+            luaExePath = this.args.exePath;
+        }
         var luaStartProc = child_process.exec(luaExePath + ' -e "' + pathStr + '"');
         return luaStartProc;
     }
