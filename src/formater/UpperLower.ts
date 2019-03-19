@@ -15,15 +15,15 @@ export class UpperLower {
     }
 
     public static process(converTextFun: Function) {
-        var editor = vscode.window.activeTextEditor;
-        var d = editor.document;
-        var sel = editor.selections;
+        let editor = vscode.window.activeTextEditor
+        let d = editor.document
+        let sel = editor.selections
         editor.edit(function (edit) {
-            for (var x = 0; x < sel.length; x++) {
-                var txt = d.getText(new vscode.Range(sel[x].start, sel[x].end));
+            for (let x = 0; x < sel.length; x++) {
+                let txt = d.getText(new vscode.Range(sel[x].start, sel[x].end))
                 txt = converTextFun(txt)
-                edit.replace(sel[x], txt);
+                edit.replace(sel[x], txt)
             }
-        });
+        })
     }
 }

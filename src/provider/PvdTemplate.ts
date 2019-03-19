@@ -1,4 +1,4 @@
-import { EXMgr } from "../context/EXMgr"
+import { ExtMgr } from "../context/ExtMgr"
 import { Helper } from "../context/Helper"
 import * as vscode from "vscode"
 var fs = require("fs")
@@ -10,8 +10,8 @@ export class PvdTemplate {
 
     public static process(e) {
         var templates: Array<string> = new Array<string>()
-        rd.eachFileFilterSync(EXMgr.templateDir, /\.lua$/, function (f, s) {
-            templates.push(f.substring(EXMgr.templateDir.length + 1, f.length))
+        rd.eachFileFilterSync(ExtMgr.templateDir, /\.lua$/, function (f, s) {
+            templates.push(f.substring(ExtMgr.templateDir.length + 1, f.length))
         });
         if (templates != null) {
             if (templates.length > 0) {
@@ -21,7 +21,7 @@ export class PvdTemplate {
                     }
                 })
             } else {
-                vscode.window.showWarningMessage("No template files in " + EXMgr.templateDir + ", please change 'luaide-lite.templateDir'")
+                vscode.window.showWarningMessage("No template files in " + ExtMgr.templateDir + ", please change 'luaide-lite.templateDir'")
             }
         }
     }
@@ -36,7 +36,7 @@ export class PvdTemplate {
                 PvdTemplate.showInputBox(selection, e, "File name negative, please input again.")
                 return
             } else {
-                var content = fs.readFileSync(path.join(EXMgr.templateDir, selection), "utf8")
+                var content = fs.readFileSync(path.join(ExtMgr.templateDir, selection), "utf8")
                 var newfile = ""
                 if (e != null && e.fsPath != null) {
                     newfile = e.fsPath
@@ -58,7 +58,7 @@ export class PvdTemplate {
                 content = content.replace(new RegExp("{date}", "gm"), date)
                 var isCopyright = false
                 var isAuthor = false
-                EXMgr.templateDefine.forEach((v, k) => {
+                ExtMgr.templateDefine.forEach((v, k) => {
                     if (k == "copyright") {
                         isCopyright = true
                     } else if (k == "author") {

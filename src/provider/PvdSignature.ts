@@ -1,6 +1,6 @@
 'use strict';
 import { LParse } from '../parser/LParse'
-import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT, LSymbol } from '../context/LEntity'
+import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT, LSymbol } from '../parser/LEntity'
 import { languages, window, commands, SignatureHelpProvider, SignatureHelp, SignatureInformation, ParameterInformation, TextDocument, Position, Range, CancellationToken } from 'vscode'
 import { LFile } from "./LFile"
 import { LCItem } from './LCItem'

@@ -5,11 +5,11 @@ import vscode = require('vscode')
 import { LParse } from '../parser/LParse'
 import { LParseHelper } from '../parser/LParseHelper'
 import { LCItem } from "../provider/LCItem"
-import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT } from '../context/LEntity'
+import { LToken, LTT } from '../parser/LEntity'
 import { Helper } from '../context/Helper'
 import { PvdHelper } from '../provider/PvdHelper'
 import { LFItem } from "./LFItem"
-import { LuaCompletionItemControler } from "./LuaCompletionItemControler"
+import { LuaCompletionItemControler } from "./LComplete"
 import { LAItem } from "./LAItem"
 import { CompletionItem, CompletionItemKind } from "vscode"
 import { LICache } from "./LICache"
@@ -21,9 +21,7 @@ export class PvdCompletion implements vscode.CompletionItemProvider {
         return this.parse(document, position, token);
     }
 
-    public parse(document: vscode.TextDocument,
-        position: vscode.Position,
-        token: vscode.CancellationToken): Thenable<vscode.CompletionItem[]> {
+    public parse(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Thenable<vscode.CompletionItem[]> {
         return new Promise<vscode.CompletionItem[]>((resolve, reject) => {
             let lineText = document.lineAt(position.line).text;
             var requireRuggestions: Array<LCItem> = new Array<LCItem>();

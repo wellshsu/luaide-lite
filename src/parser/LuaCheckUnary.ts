@@ -1,4 +1,4 @@
-import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT } from '../context/LEntity'
+import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT } from './LEntity'
 import { LParse } from './LParse'
 import { Helper } from '../context/Helper'
 /**验证 一元 */

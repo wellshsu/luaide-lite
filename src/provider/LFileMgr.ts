@@ -1,4 +1,4 @@
-import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT } from '../context/LEntity'
+import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT } from '../parser/LEntity'
 import { LParse } from "../parser/LParse"
 import { CompletionItem, CompletionItemKind, Uri } from "vscode"
 import { LCItem } from "../provider/LCItem"

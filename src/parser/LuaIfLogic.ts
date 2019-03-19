@@ -1,4 +1,4 @@
-import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT } from '../context/LEntity'
+import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT } from './LEntity'
 import { LParse } from './LParse'
 export class LuaIfLogic {
     private lp: LParse;

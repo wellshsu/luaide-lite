@@ -1,7 +1,7 @@
-import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT } from '../context/LEntity'
+import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT } from './LEntity'
 import { LParse } from './LParse'
 import { Helper } from '../context/Helper'
-import { EXMgr } from "../context/EXMgr"
+import { ExtMgr } from "../context/ExtMgr"
 export class LuaFuncitonCheck {
     private lp: LParse;
 
@@ -58,7 +58,7 @@ export class LuaFuncitonCheck {
                     continue;
                 } else if (this.lp.Compare(':', nextToken, LTT.Punctuator)) {
                     // luaInfo.name = luaInfo.name +":"
-                    if (EXMgr.moduleFunNestingCheck) {
+                    if (ExtMgr.moduleFunNestingCheck) {
                         if (this.currentFunLuaInfo) {
                             this.lp.setError(token, "module can not be nested", this.currentFunLuaInfo.startToken);
                             return

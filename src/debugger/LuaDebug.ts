@@ -1,9 +1,9 @@
-import { DebugSession, InitializedEvent, TerminatedEvent, StoppedEvent, OutputEvent, Event, Thread, StackFrame, Scope, Source, Breakpoint } from 'vscode-debugadapter'
+import { DebugSession, InitializedEvent, TerminatedEvent, StoppedEvent, OutputEvent, Thread, StackFrame, Source } from 'vscode-debugadapter'
 import { DebugProtocol } from 'vscode-debugprotocol'
 import child_process = require('child_process')
 const fs = require('fs')
 const ospath = require('path')
-var os = require('os')
+const os = require('os')
 import { BPMgr } from "./BPMgr"
 import { NetMgr, LuaDebuggerEvent, ClientStatus } from './NetMgr'
 import { ScopeMgr, LuaDebugVarInfo } from './ScopeMgr'
@@ -17,7 +17,6 @@ export enum DebugMode {
 export class LuaDebug extends DebugSession {
 	private netMgr: NetMgr
 	private bpMgr: BPMgr
-	private bpID = 1000
 	private luaStartProc: child_process.ChildProcess
 	public fileExtname: string
 	public runtimeType: string
@@ -55,12 +54,11 @@ export class LuaDebug extends DebugSession {
 		response.body.supportsEvaluateForHovers = true
 		this.sendResponse(response)
 
-		//初始化断点信息
 		this.bpMgr = new BPMgr(this)
 		this.pathMaps = new Map<string, Array<string>>()
-		var luaDebug: LuaDebug = this
+		let that: LuaDebug = this
 		this.on("close", function () {
-			luaDebug.netMgr.close()
+			that.netMgr.close()
 		})
 	}
 
@@ -70,9 +68,9 @@ export class LuaDebug extends DebugSession {
 			this.sendEvent(new StoppedEvent('breakpoint', 1))
 		})
 		this.netMgr.on('C2S_LuaPrint', result => {
-			var content = new Buffer(result.data.msg, 'base64').toString('utf8')
+			let content = new Buffer(result.data.msg, 'base64').toString('utf8')
 			if (this.printDate) {
-				content = this.FormatDate(new Date(), "[yyyy-MM-dd hh:mm:ss] ") + content;
+				content = this.FormatDate(new Date(), "[yyyy-MM-dd hh:mm:ss] ") + content
 			}
 			if (result.data.type == 1) {
 				this.sendEvent(new OutputEvent(content + "\n", 'stdout'))
@@ -90,7 +88,7 @@ export class LuaDebug extends DebugSession {
 	}
 
 	protected launchRequest(response: DebugProtocol.LaunchResponse, args: any): void {
-		var result = this.checkArgs(args)
+		let result = this.checkArgs(args)
 		if (result != true) {
 			this.sendErrorResponse(response, 2001, result)
 			return
@@ -104,7 +102,7 @@ export class LuaDebug extends DebugSession {
 			args.port = this.calculatePort()
 		}
 		this.printType = args.printType
-		var proc = new ExecMgr(args, this)
+		let proc = new ExecMgr(args)
 
 		this.netMgr = new NetMgr(this, DebugMode.launch, args)
 		this.scopeMgr = new ScopeMgr(this.netMgr, this)
@@ -114,22 +112,21 @@ export class LuaDebug extends DebugSession {
 			this.luaStartProc.kill()
 		}
 		this.sendResponse(response)
+
+		let that: LuaDebug = this
 		this.luaStartProc = proc.exec()
 		this.luaStartProc.on('error', error => {
 			this.sendEvent(new OutputEvent("Process error: " + error.message + "\n"))
 		})
 		this.luaStartProc.stderr.setEncoding('utf8')
 		this.luaStartProc.stderr.on('data', error => {
-			luadebug.sendEvent(new OutputEvent(error + "\n"))
+			that.sendEvent(new OutputEvent(error + "\n"))
 		})
-		var luadebug: LuaDebug = this
-		//关闭事件
-		var self = this
 		this.luaStartProc.on('close', function (code) {
-			if (luadebug.netMgr) {
-				luadebug.netMgr.sendMsg(LuaDebuggerEvent.S2C_DebugClose)
+			if (that.netMgr) {
+				that.netMgr.sendMsg(LuaDebuggerEvent.S2C_DebugClose)
 			}
-			luadebug.sendEvent(new TerminatedEvent())
+			that.sendEvent(new TerminatedEvent())
 		})
 		this.initEXCfg()
 	}
@@ -163,16 +160,16 @@ export class LuaDebug extends DebugSession {
 	}
 
 	protected setBreakPointsRequest(response: DebugProtocol.SetBreakpointsResponse, args: DebugProtocol.SetBreakpointsArguments): void {
-		var path = args.source.path
+		let path = args.source.path
 		path = path.substring(0, 1).toLowerCase() + path.substring(1, path.length)
-		var lines = args.lines
-		var bps = this.bpMgr.verifiedBreakPoint(path, lines, args.breakpoints)
+		let lines = args.lines
+		let bps = this.bpMgr.verifiedBreakPoint(path, lines, args.breakpoints)
 		response.body = {
 			breakpoints: bps
 		}
 		if (this.netMgr != null && this.netMgr.getSocketState() == ClientStatus.connected) {
-			var data = this.bpMgr.getClientBreakPointInfo(path)
-			this.netMgr.sendMsg(LuaDebuggerEvent.S2C_SetBreakPoints, data ? [data] : null, this.isHitBreak == true ? this.netMgr.mainSocket : this.netMgr.breakPointSocket);
+			let data = this.bpMgr.getClientBreakPointInfo(path)
+			this.netMgr.sendMsg(LuaDebuggerEvent.S2C_SetBreakPoints, data ? [data] : null, this.isHitBreak == true ? this.netMgr.mainSocket : this.netMgr.breakPointSocket)
 		}
 		this.sendResponse(response)
 	}
@@ -188,45 +185,43 @@ export class LuaDebug extends DebugSession {
 
 	protected stackTraceRequest(response: DebugProtocol.StackTraceResponse, args: DebugProtocol.StackTraceArguments): void {
 		let currentTime = Date.now()
-		if ((currentTime - this.lastStackReqTime) > 500) {
-			this.lastStackReqTime = currentTime
-			var stackInfos: Array<any> = this.scopeMgr.getStackInfos()
-			const frames = new Array<StackFrame>()
-			for (var i = 0; i < stackInfos.length; i++) {
-				var info = stackInfos[i];
-				var _file: string = info.src
-				if (_file.endsWith("/lua")) {
-					_file = _file.replace("/lua", this.fileExtname)
-				}
-				else if (_file == "=[C]") {
-					_file = ospath.join(os.tmpdir(), "=[C]")
-					_file = _file.replace(/\\/g, "/")
-					try {
-						if (fs.existsSync(_file)) {
-							fs.unlinkSync(_file)
-						}
-						let json = JSON.stringify(info)
-						fs.writeFileSync(_file, json)
-					} catch (e) { }
-				} else {
-					if (_file.indexOf(this.fileExtname) == -1) {
-						_file = _file + this.fileExtname
+		let deltaTime = currentTime - this.lastStackReqTime
+		let stackInfos: Array<any> = this.scopeMgr.getStackInfos()
+		const frames = new Array<StackFrame>()
+		for (let i = 0; i < stackInfos.length; i++) {
+			let info = stackInfos[i]
+			let source: string = info.src
+			if (source.endsWith("/lua")) {
+				source = source.replace("/lua", this.fileExtname)
+			}
+			else if (source == "=[C]") {
+				source = ospath.join(os.tmpdir(), "=[C]")
+				source = source.replace(/\\/g, "/")
+				try {
+					if (fs.existsSync(source)) {
+						fs.unlinkSync(source)
 					}
-					_file = this.convertToServerPath(_file)
+					let json = JSON.stringify(info)
+					fs.writeFileSync(source, json)
+				} catch (e) { }
+			} else {
+				if (source.indexOf(this.fileExtname) == -1) {
+					source = source + this.fileExtname
 				}
-				if (_file != null && _file != "") {
-					var tname = _file.substring(_file.lastIndexOf("/") + 1)
-					var line = info.currentline
-
-					frames.push(new StackFrame(i, info.scoreName,
-						new Source(tname, _file),
-						line))
-				}
+				source = this.convertToServerPath(source)
 			}
-			response.body = {
-				stackFrames: frames,
-				totalFrames: frames.length
+			if (source != null && source != "") {
+				let tname = source.substring(source.lastIndexOf("/") + 1)
+				let line = info.currentline
+				frames.push(new StackFrame(i, info.scoreName, new Source(tname, source), line))
 			}
+		}
+		response.body = {
+			stackFrames: frames,
+			totalFrames: frames.length
+		}
+		if (deltaTime > 500) {
+			this.lastStackReqTime = currentTime
 			this.sendResponse(response)
 		}
 	}
@@ -240,27 +235,27 @@ export class LuaDebug extends DebugSession {
 	}
 
 	protected variablesRequest(response: DebugProtocol.VariablesResponse, args: DebugProtocol.VariablesArguments): void {
-		var luadebug: LuaDebug = this
-		var luaDebugVarInfo: LuaDebugVarInfo = this.scopeMgr.getDebugVarsInfoByVariablesReference(args.variablesReference)
+		let that: LuaDebug = this
+		let luaDebugVarInfo: LuaDebugVarInfo = this.scopeMgr.getDebugVarsInfoByVariablesReference(args.variablesReference)
 		if (luaDebugVarInfo) {
 			this.scopeMgr.getVarsInfos(args.variablesReference,
 				function (variables) {
-					var newVariables = []
+					let newVariables = []
 					if (variables) {
 						variables.forEach(element => {
-							var newVariable = {
+							let newVariable = {
 								name: element.name,
 								type: element.type,
 								value: element.value,
 								variablesReference: element.variablesReference
 							}
 							if (newVariable.type == "number") {
-								if (luadebug.exConfig && luadebug.exConfig["luaide-lite.numberRadix"]) {
-									var radixes = luadebug.exConfig["luaide-lite.numberRadix"]
+								if (that.exConfig && that.exConfig["luaide-lite.numberRadix"]) {
+									let radixes = that.exConfig["luaide-lite.numberRadix"]
 									if (radixes && radixes.length > 0) {
-										var newValue = ""
-										for (var i = 0; i < radixes.length; i++) {
-											var radix = radixes[i]
+										let newValue = ""
+										for (let i = 0; i < radixes.length; i++) {
+											let radix = radixes[i]
 											if (radix == 16) {
 												newValue += "0x" + parseInt(newVariable.value).toString(radix)
 											} else {
@@ -280,7 +275,7 @@ export class LuaDebug extends DebugSession {
 					response.body = {
 						variables: newVariables
 					}
-					luadebug.sendResponse(response)
+					that.sendResponse(response)
 				})
 		}
 		else {
@@ -302,10 +297,10 @@ export class LuaDebug extends DebugSession {
 
 	protected nextRequest(response: DebugProtocol.NextResponse, args: DebugProtocol.NextArguments): void {
 		this.scopeMgr.clear()
-		var luadebug: LuaDebug = this
+		let that: LuaDebug = this
 		function callBackFun(isstep, isover) {
 			if (isstep) {
-				luadebug.sendEvent(new StoppedEvent("step", 1))
+				that.sendEvent(new StoppedEvent("step", 1))
 			}
 		}
 		try {
@@ -318,17 +313,17 @@ export class LuaDebug extends DebugSession {
 
 	protected stepInRequest(response: DebugProtocol.StepInResponse): void {
 		this.scopeMgr.clear()
-		var luadebug: LuaDebug = this
+		let that: LuaDebug = this
 		this.scopeMgr.stepReq(function (isstep, isover) {
 			if (isover) {
 				this.sendEvent(new TerminatedEvent())
 				return
 			}
 			if (isstep) {
-				luadebug.sendEvent(new StoppedEvent("step", 1))
+				that.sendEvent(new StoppedEvent("step", 1))
 			}
 		}, LuaDebuggerEvent.S2C_StepInRequest)
-		luadebug.sendResponse(response)
+		that.sendResponse(response)
 	}
 
 	protected pauseRequest(response: DebugProtocol.PauseResponse): void {
@@ -338,33 +333,33 @@ export class LuaDebug extends DebugSession {
 
 	protected stepOutRequest(response: DebugProtocol.StepInResponse): void {
 		this.sendResponse(response)
-		var luadebug: LuaDebug = this
+		let that: LuaDebug = this
 		this.scopeMgr.stepReq(function (isstep, isover) {
 			if (isover) {
 				this.sendEvent(new TerminatedEvent())
 				return
 			}
-			luadebug.sendResponse(response)
+			that.sendResponse(response)
 			if (isstep) {
-				luadebug.sendEvent(new StoppedEvent("step", 1))
+				that.sendEvent(new StoppedEvent("step", 1))
 			}
 		}, LuaDebuggerEvent.S2C_StepOutRequest)
 	}
 
 	protected evaluateRequest(response: DebugProtocol.EvaluateResponse, args: DebugProtocol.EvaluateArguments): void {
-		var luadebug: LuaDebug = this
-		var frameId = args.frameId
+		let luadebug: LuaDebug = this
+		let frameId = args.frameId
 		if (frameId == null) {
 			frameId = 0
 		}
-		var expression = args.expression
-		var eindex = expression.lastIndexOf("..")
+		let expression = args.expression
+		let eindex = expression.lastIndexOf("..")
 		if (eindex > -1) {
 			expression = expression.substring(eindex + 2)
 		}
 		eindex = expression.lastIndexOf('"')
 		if (eindex == 0) {
-			var body = {
+			let body = {
 				result: expression + '"',
 				variablesReference: 0
 			}
@@ -374,11 +369,11 @@ export class LuaDebug extends DebugSession {
 		}
 		if (parseInt(expression)) {
 			if (luadebug.exConfig && luadebug.exConfig["luaide-lite.numberRadix"]) {
-				var radixes = luadebug.exConfig["luaide-lite.numberRadix"]
+				let radixes = luadebug.exConfig["luaide-lite.numberRadix"]
 				if (radixes && radixes.length > 0) {
-					var newValue = ""
-					for (var i = 0; i < radixes.length; i++) {
-						var radix = radixes[i]
+					let newValue = ""
+					for (let i = 0; i < radixes.length; i++) {
+						let radix = radixes[i]
 						if (radix == 16) {
 							newValue += "0x" + parseInt(expression).toString(radix)
 						} else {
@@ -388,14 +383,14 @@ export class LuaDebug extends DebugSession {
 							newValue += " | "
 						}
 					}
-					var body = {
+					let body = {
 						result: newValue,
 						variablesReference: 0
 					}
 					response.body = body
 					luadebug.sendResponse(response)
 				} else {
-					var body = {
+					let body = {
 						result: expression,
 						variablesReference: 0
 					}
@@ -404,7 +399,7 @@ export class LuaDebug extends DebugSession {
 				}
 			}
 			else {
-				var body = {
+				let body = {
 					result: expression,
 					variablesReference: 0
 				}
@@ -420,9 +415,9 @@ export class LuaDebug extends DebugSession {
 			// })
 			return
 		}
-		var index: number = 1
-		var scopesManager = this.scopeMgr
-		var callBackFun = function (body) {
+		let index: number = 1
+		let scopesManager = this.scopeMgr
+		const callBackFun = function (body) {
 			if (body == null) {
 				index++
 				if (index > 3) {
@@ -444,13 +439,13 @@ export class LuaDebug extends DebugSession {
 	}
 
 	protected setVariableRequest(response: DebugProtocol.SetVariableResponse, args: DebugProtocol.SetVariableArguments): void {
-		var varInfo: LuaDebugVarInfo = this.scopeMgr.getDebugVarsInfoByVariablesReference(args.variablesReference)
+		let varInfo: LuaDebugVarInfo = this.scopeMgr.getDebugVarsInfoByVariablesReference(args.variablesReference)
 		if (varInfo) {
-			var that = this
-			for (var i = 0; i < varInfo.variables.length; i++) {
-				var temp = varInfo.variables[i]
+			let that = this
+			for (let i = 0; i < varInfo.variables.length; i++) {
+				let temp = varInfo.variables[i]
 				if (temp.name == args.name) {
-					var msg = {
+					let msg = {
 						group: varInfo.name,
 						frameId: varInfo.frameId,
 						name: args.name,
@@ -477,26 +472,26 @@ export class LuaDebug extends DebugSession {
 		}
 		path = path.replace(/\\/g, "/")
 		path = path.replace(new RegExp("/./", "gm"), "/")
-		var nindex: number = path.lastIndexOf("/")
-		var fileName: string = path.substring(nindex + 1)
+		let nindex: number = path.lastIndexOf("/")
+		let fileName: string = path.substring(nindex + 1)
 
 		fileName = fileName.substr(0, fileName.length - 4) + this.fileExtname
 		path = path.substr(0, path.length - 4) + this.fileExtname
 
-		var paths: Array<string> = this.pathMaps.get(fileName)
+		let paths: Array<string> = this.pathMaps.get(fileName)
 		if (paths == null) {
 			return path
 		}
-		var clientPaths = path.split("/")
-		var isHit: boolean = true
-		var hitServerPath = ""
-		var pathHitCount: Array<number> = new Array<number>()
-		for (var index = 0; index < paths.length; index++) {
-			var serverPath = paths[index]
+		let clientPaths = path.split("/")
+		let isHit: boolean = true
+		let hitServerPath = ""
+		let pathHitCount: Array<number> = new Array<number>()
+		for (let index = 0; index < paths.length; index++) {
+			let serverPath = paths[index]
 			pathHitCount.push(0)
-			var serverPaths = serverPath.split("/")
-			var serverPathsCount = serverPaths.length
-			var clientPathsCount = clientPaths.length
+			let serverPaths = serverPath.split("/")
+			let serverPathsCount = serverPaths.length
+			let clientPathsCount = clientPaths.length
 			while (true) {
 				if (clientPaths[clientPathsCount--] != serverPaths[serverPathsCount--]) {
 					isHit = false
@@ -510,10 +505,10 @@ export class LuaDebug extends DebugSession {
 			}
 		}
 		//判断谁的命中多 
-		var maxCount = 0
-		var hitIndex = -1
-		for (var j = 0; j < pathHitCount.length; j++) {
-			var count = pathHitCount[j]
+		let maxCount = 0
+		let hitIndex = -1
+		for (let j = 0; j < pathHitCount.length; j++) {
+			let count = pathHitCount[j]
 			if (count >= maxCount && count > 0) {
 				hitIndex = j
 				maxCount = count
@@ -526,37 +521,26 @@ export class LuaDebug extends DebugSession {
 
 	public convertToClientPath(path: string, lines: Array<number>): any {
 		path = path.replace(/\\/g, "/")
-		var nindex: number = path.lastIndexOf("/")
-		var fileName: string = path.substring(nindex + 1)
-		var extname = ospath.extname(path)
-		var baseName = ospath.basename(path)
+		let nindex: number = path.lastIndexOf("/")
+		let fileName: string = path.substring(nindex + 1)
+		let extname = ospath.extname(path)
+		let baseName = ospath.basename(path)
 		fileName = fileName.substr(0, fileName.length - extname.length) + ".lua"
 		path = path.substr(0, path.length - extname.length) + ".lua"
-		var pathinfo = {
+		let pathinfo = {
 			fileName: fileName,
 			serverPath: path,
 			lines: lines
 		}
 		return pathinfo
-		//检查文件是否存在如果存在那么就
-		// var paths: Array<string> = new Array<string>()
-		// var clientPath: string = ""
-		// for (var index = 0; index < this.scriptPaths.length; index++) {
-		// 	var serverPath: string = this.scriptPaths[index]
-		// 	if (path.indexOf(serverPath) > -1) {
-		// 		clientPath = path.replace(serverPath, "")
-		// 		paths.push(clientPath)
-		// 	}
-		// }
-		// return paths
 	}
 
 	private checkArgs(args: any): any {
-		var localRoot: string = args.localRoot
+		let localRoot: string = args.localRoot
 		if (!fs.existsSync(localRoot)) {
 			return "localRoot: " + localRoot + " doesn't exist!"
 		}
-		var runtimeType: string = args.runtimeType
+		let runtimeType: string = args.runtimeType
 		if (runtimeType == "Lua51") {
 			return true
 		}
@@ -566,8 +550,8 @@ export class LuaDebug extends DebugSession {
 				return "Exe does not exist: " + args.exePath
 			}
 			if (args.scripts) {
-				for (var index = 0; index < args.scripts.length; index++) {
-					var scriptsPath = args.scripts[index]
+				for (let index = 0; index < args.scripts.length; index++) {
+					let scriptsPath = args.scripts[index]
 					if (!fs.existsSync(scriptsPath)) {
 						return "Scripts does not exist: " + scriptsPath
 					}
@@ -578,10 +562,10 @@ export class LuaDebug extends DebugSession {
 	}
 
 	private initPathMaps(scripts: Array<string>) {
-		var paths: Array<string> = new Array<string>()
+		let paths: Array<string> = new Array<string>()
 		if (scripts) {
-			for (var index = 0; index < scripts.length; index++) {
-				var scriptPath = scripts[index]
+			for (let index = 0; index < scripts.length; index++) {
+				let scriptPath = scripts[index]
 				scriptPath = scriptPath.replace(/\\/g, "/")
 				if (scriptPath.charAt(scriptPath.length - 1) != "/") {
 					scriptPath += "/"
@@ -595,12 +579,12 @@ export class LuaDebug extends DebugSession {
 			else return 1
 		}
 		paths = paths.sort(sortPath)
-		var tempPaths: Array<string> = Array<string>()
+		let tempPaths: Array<string> = Array<string>()
 		tempPaths.push(paths[0])
-		for (var index = 1; index < paths.length; index++) {
-			var addPath = paths[index]
-			var isAdd = true
-			for (var k = 0; k < tempPaths.length; k++) {
+		for (let index = 1; index < paths.length; index++) {
+			let addPath = paths[index]
+			let isAdd = true
+			for (let k = 0; k < tempPaths.length; k++) {
 				if (addPath == tempPaths[k] || addPath.indexOf(tempPaths[k]) > -1 || tempPaths[k].indexOf(addPath) > -1) {
 					isAdd = false
 					break
@@ -611,7 +595,7 @@ export class LuaDebug extends DebugSession {
 			}
 		}
 		this.pathMaps.clear()
-		for (var k = 0; k < tempPaths.length; k++) {
+		for (let k = 0; k < tempPaths.length; k++) {
 			this.readFileList(tempPaths[k])
 		}
 	}
@@ -624,18 +608,18 @@ export class LuaDebug extends DebugSession {
 		if (path.charAt(path.length - 1) != "/") {
 			path += "/"
 		}
-		var files = fs.readdirSync(path)
-		for (var index = 0; index < files.length; index++) {
-			var filePath = path + files[index]
-			var stat = fs.statSync(filePath)
+		let files = fs.readdirSync(path)
+		for (let index = 0; index < files.length; index++) {
+			let filePath = path + files[index]
+			let stat = fs.statSync(filePath)
 			if (stat.isDirectory()) {
 				//递归读取文件
 				this.readFileList(filePath)
 			} else {
 				if (filePath.indexOf(this.fileExtname) > -1) {
-					var nindex: number = filePath.lastIndexOf("/")
-					var fileName: string = filePath.substring(nindex + 1)
-					var filePaths: Array<string> = null
+					let nindex: number = filePath.lastIndexOf("/")
+					let fileName: string = filePath.substring(nindex + 1)
+					let filePaths: Array<string> = null
 					if (this.pathMaps.has(fileName)) {
 						filePaths = this.pathMaps.get(fileName)
 					} else {
@@ -649,12 +633,12 @@ export class LuaDebug extends DebugSession {
 	}
 
 	private calculatePort(): any {
-		var port = 7003
+		let port = 7003
 		if (this.pathMaps) {
 			try {
 				this.pathMaps.forEach((v, k) => {
 					if (k == "LuaDebug.lua" && v.length > 0) {
-						var token = v[0]
+						let token = v[0]
 						token = token.replace(/@/g, "")
 						token = token.replace(/\\/g, "")
 						token = token.replace(/\//g, "")
@@ -662,7 +646,7 @@ export class LuaDebug extends DebugSession {
 						token = token.replace("LuaDebug.lua", "")
 						token = token.toLocaleLowerCase()
 						port = 0
-						for (var i = 0; i < token.length; i++) {
+						for (let i = 0; i < token.length; i++) {
 							port += token.charCodeAt(i)
 						}
 						port = port % 10000 + 50000
@@ -675,7 +659,7 @@ export class LuaDebug extends DebugSession {
 	}
 
 	private initEXCfg() {
-		var cfgFile = ospath.join(this.localRoot, ".vscode/settings.json")
+		let cfgFile = ospath.join(this.localRoot, ".vscode/settings.json")
 		if (fs.existsSync(cfgFile)) {
 			try {
 				this.exConfig = require(cfgFile)
@@ -684,7 +668,7 @@ export class LuaDebug extends DebugSession {
 	}
 
 	public FormatDate(date: Date, fmt) {
-		var o = {
+		let o = {
 			"M+": date.getMonth() + 1, //月份           
 			"d+": date.getDate(), //日           
 			"h+": date.getHours() % 12 == 0 ? 12 : date.getHours() % 12, //小时           
@@ -693,8 +677,8 @@ export class LuaDebug extends DebugSession {
 			"s+": date.getSeconds(), //秒           
 			"q+": Math.floor((date.getMonth() + 3) / 3), //季度           
 			"S": date.getMilliseconds() //毫秒           
-		};
-		var week = {
+		}
+		let week = {
 			"0": "/u65e5",
 			"1": "/u4e00",
 			"2": "/u4e8c",
@@ -702,19 +686,19 @@ export class LuaDebug extends DebugSession {
 			"4": "/u56db",
 			"5": "/u4e94",
 			"6": "/u516d"
-		};
+		}
 		if (/(y+)/.test(fmt)) {
 			fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
 		}
 		if (/(E+)/.test(fmt)) {
 			fmt = fmt.replace(RegExp.$1, ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "/u661f/u671f" : "/u5468") : "") + week[date.getDay() + ""]);
 		}
-		for (var k in o) {
+		for (let k in o) {
 			if (new RegExp("(" + k + ")").test(fmt)) {
 				fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
 			}
 		}
-		return fmt;
+		return fmt
 	}
 
 }

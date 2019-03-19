@@ -1,5 +1,5 @@
 import { CompletionItem, CompletionItemKind, window } from 'vscode'
-import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT, LSymbol } from "../context/LEntity"
+import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT, LSymbol } from "../parser/LEntity"
 import vscode = require('vscode')
 
 export class LCItem extends CompletionItem {

@@ -1,6 +1,6 @@
 import vscode = require('vscode');
 import { LParse } from '../parser/LParse'
-import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT } from '../context/LEntity'
+import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT } from '../parser/LEntity'
 import { LParseHelper } from '../parser/LParseHelper'
 import { Helper } from '../context/Helper'
 

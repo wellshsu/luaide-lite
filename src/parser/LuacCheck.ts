@@ -1,7 +1,7 @@
 import vscode = require('vscode')
 var path = require('path')
 import child_process = require('child_process')
-import { EXMgr } from '../context/EXMgr'
+import { ExtMgr } from '../context/ExtMgr'
 export class LuacCheck {
     //默认为5.1
     private luaPath: string;

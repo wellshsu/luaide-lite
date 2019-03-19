@@ -1,14 +1,10 @@
 
-import { LParse } from '../parser/LParse'
-import { LCItem } from "../provider/LCItem"
-import { LFileMgr } from '../provider/LFileMgr'
-import { LParseHelper } from '../parser/LParseHelper'
 import cp = require('child_process')
 import vscode = require('vscode')
-var fs = require('fs')
+import { LParse } from '../parser/LParse'
+import { LParseHelper } from '../parser/LParseHelper'
 import { format } from 'util'
-import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT } from '../context/LEntity'
-import { EXMgr } from "../context/EXMgr"
+import { LToken, LTT, LComment } from '../parser/LEntity'
 
 export class Helper {
     public static Log(content: any, ...optionalParams: any[]) {
@@ -353,6 +349,46 @@ export class Helper {
                     return 1
                 }
             })
+        }
+    }
+
+    public static Format(fmt: string, ...args: any[]): string {
+        if (fmt) {
+            if (args.length > 0) {
+                let index = 0
+                const doReplace = function (rplc) {
+                    if (rplc == null) {
+                        rplc = "undefined"
+                    }
+                    if (rplc instanceof Array) {
+                        for (let i = 0; i < rplc.length; i++) {
+                            let temp = rplc[i]
+                            doReplace(temp)
+                        }
+                    }
+                    else {
+                        let str: string
+                        let reg = new RegExp("({)" + index + "(})", "g")
+                        if (typeof (rplc) == "string") {
+                            str = <string>rplc
+                        } else {
+                            str = rplc.toString()
+                        }
+                        fmt = fmt.replace(reg, str)
+                        index++
+                    }
+                }
+                for (let i = 0; i < args.length; i++) {
+                    let temp = args[i]
+                    if (temp != null) {
+                        doReplace(temp)
+                    }
+                }
+            }
+            return fmt
+        }
+        else {
+            return null
         }
     }
 

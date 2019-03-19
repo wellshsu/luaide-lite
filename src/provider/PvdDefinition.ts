@@ -6,11 +6,11 @@ import { LFileMgr } from './LFileMgr'
 import { LCItem } from "../provider/LCItem"
 import { LFile } from "./LFile"
 import { LFItem } from "./LFItem"
-import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT } from '../context/LEntity'
+import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT } from '../parser/LEntity'
 import { LGItem } from "../provider/LGItem"
 import { Helper } from '../context/Helper'
 import { Uri } from "vscode"
-import { EXMgr } from '../context/EXMgr'
+import { ExtMgr } from '../context/ExtMgr'
 
 export class PvdDefinition implements vscode.DefinitionProvider {
     public provideDefinition(

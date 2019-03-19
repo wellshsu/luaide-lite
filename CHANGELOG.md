@@ -1,3 +1,13 @@
+# 0.1.8 [2019.03.19]
+* 修复调试堆栈显示错误问题(常发生于同文件内F10跳转).
+* 优化 'luaide-lite.exclude' 设置, 同时支持lagacy和emmy两种模式, 如果内存占用过高请设置该选项以忽略不常用的文件(夹).
+* 优化 'Legacy' 代码结构, 方便有兴趣的同学学习, 后续将继续梳理代码结构.
+* 新增天气显示.
+* Fix incorrect stacktrace request.
+* Optimize 'luaide-lite.exclude', support legacy and emmy mode.
+* Optimize 'Legacy' code structure.
+* Add weather feature.
+
 # 0.1.7 [2019.01.31]
 * 新增 'luaide-lite.core' 设置, 你可以指定不同版本的代码解析工具, emmy-使用emmylua库解析工程, legacy-使用既有版本解析工程.
 * 修改插件图标, 增加辨识度.

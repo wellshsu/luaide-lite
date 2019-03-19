@@ -3,12 +3,12 @@
 import vscode = require('vscode')
 import { Uri, SymbolInformation, Position, Range, SymbolKind } from 'vscode'
 import { LParse } from '../parser/LParse'
-import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT, LSymbol } from '../context/LEntity'
+import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT, LSymbol } from '../parser/LEntity'
 import { LCItem } from "../provider/LCItem"
 import { LParseHelper } from '../parser/LParseHelper';
 import { CompletionItem, CompletionItemKind } from "vscode"
 import { Helper } from '../context/Helper'
-import { EXMgr } from "../context/EXMgr"
+import { ExtMgr } from "../context/ExtMgr"
 import { HighlightG } from "../formater/HighlightG"
 
 export class LFile {
@@ -251,20 +251,11 @@ export class LFile {
     }
 
     public addSymbol(lp: LParse, luaInfo: LFrag, token: LToken, functionEndToken: LToken, symolName?: string): LSymbol {
-        var parentName: string = "";
-        var tokens: Array<LToken> = lp.tokens;
-        var starIndex: number = luaInfo.startToken.index;
-        var endIndex: number = token.index;
-        var label: string = "";
-        var symbolInfo = new LSymbol(
-            token.value,
-            SymbolKind.Function,
-            new Range(
-                new Position(luaInfo.startToken.line, luaInfo.startToken.range.start),
-                new Position(functionEndToken.line, token.range.end)
-            ),
-            undefined,
-            Helper.GetFirstComments(luaInfo.getComments()));
+        var tokens: Array<LToken> = lp.tokens
+        var symbolInfo = new LSymbol(token.value, SymbolKind.Function, new Range(
+            new Position(luaInfo.startToken.line, luaInfo.startToken.range.start),
+            new Position(functionEndToken.line, token.range.end)
+        ), undefined, Helper.GetFirstComments(luaInfo.getComments()));
         var nindex: number = token.index;
         while (true) {
             nindex--;
@@ -273,12 +264,8 @@ export class LFile {
                 break;
             }
             nindex--;
-            if (
-
-                lp.Compare(':', upToken, LTT.Punctuator) ||
-                lp.Compare('.', upToken, LTT.Punctuator)) {
+            if (lp.Compare(':', upToken, LTT.Punctuator) || lp.Compare('.', upToken, LTT.Punctuator)) {
                 var mtokenInfo: LToken = tokens[nindex];
-
                 symbolInfo.name = mtokenInfo.value + upToken.value + symbolInfo.name;
             } else {
                 break;
@@ -766,7 +753,7 @@ export class LFile {
                     return;
                 }
                 if (currentToken.type == LTT.Identifier) {
-                    if (EXMgr.requireFunNames.indexOf(currentToken.value) > -1) {
+                    if (ExtMgr.requireFunNames.indexOf(currentToken.value) > -1) {
                         //require 模式
                         index++;
                         currentToken = this.getValueToken(index, tokens)

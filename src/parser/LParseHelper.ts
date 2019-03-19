@@ -1,9 +1,6 @@
-import { LParse } from './LParse'
-import { Range } from 'vscode-languageclient'
-import { LFrag, LToken, LTT, LComment, LRange, LET, LError } from '../context/LEntity'
-import { Helper } from '../context/Helper'
+import { LToken, LTT, LComment, LRange, LET, LError } from './LEntity'
+
 export class LParseHelper {
-  private lp: LParse;
   private index: number = 0 // 当前解析到的位置
   private length: number = 0 // 文本总长度
   public input: string = "" // 输入文本
@@ -12,10 +9,6 @@ export class LParseHelper {
   private tokenStart: number = 0 // 标示符 或者 关键字 开始的 位置
   private lastToken: LToken // 上一个符号
   private token: LToken // 当前符号
-
-  constructor(luaparse: LParse) {
-    this.lp = luaparse;
-  }
 
   public reset(text: string): void {
     this.token = null

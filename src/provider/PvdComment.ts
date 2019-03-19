@@ -1,13 +1,13 @@
 import vscode = require('vscode')
 import { PvdHelper } from "../provider/PvdHelper"
-import { LToken, LTT } from "../context/LEntity"
-import { EXMgr } from "../context/EXMgr"
+import { LToken, LTT } from "../parser/LEntity"
+import { ExtMgr } from "../context/ExtMgr"
 import { Helper } from '../context/Helper'
 
 export class PvdComment {
 
     public static checkComment(event: vscode.TextDocumentChangeEvent): boolean {
-        if (event.document.languageId == EXMgr.LANGUAGE_ID) {
+        if (event.document.languageId == ExtMgr.LANGUAGE_ID) {
             if (event.contentChanges.length == 1) {
                 if (event.contentChanges[0].text == "-") {
                     var curentLine = event.contentChanges[0].range.start.line

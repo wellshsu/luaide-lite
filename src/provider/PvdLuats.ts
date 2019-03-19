@@ -1,6 +1,6 @@
 import { Stats } from "fs"
 import { Uri } from "vscode"
-import { EXMgr } from '../context/EXMgr'
+import { ExtMgr } from '../context/ExtMgr'
 import vscode = require('vscode')
 import { ToTypescript } from "../formater/ToTypescript";
 import { LParse } from "../parser/LParse";
@@ -11,7 +11,7 @@ var rd = require('rd');
 export class PvdLuats {
 
     public static processFile(e) {
-        if (!EXMgr.enableFormat) {
+        if (!ExtMgr.enableFormat) {
             vscode.window.showWarningMessage("Enable format setting 'luaide-lite.enableFormat:true'")
             return
         }
@@ -55,7 +55,7 @@ export class PvdLuats {
         PvdLuats.edit((text) => {
             var to = new ToTypescript(text)
             var content = to.formatContent
-            EXMgr.typescriptDefine.forEach((v, k) => {
+            ExtMgr.typescriptDefine.forEach((v, k) => {
                 content = content.replace(new RegExp(k, "gm"), v)
             })
             return content

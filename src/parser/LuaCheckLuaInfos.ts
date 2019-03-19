@@ -1,7 +1,7 @@
-import { LFrag, LVT, LToken, LTT, LComment, LRange, LET, LError, LFT } from '../context/LEntity'
+import { LFrag, LVT, LToken, LTT, LComment, LRange, LET, LError, LFT } from './LEntity'
 import { LParse } from './LParse'
 import { Helper } from '../context/Helper'
-import { EXMgr } from "../context/EXMgr"
+import { ExtMgr } from "../context/ExtMgr"
 
 /**验证 检查luainfo 集合 是否合法 */
 export class LuaCheckLuaInfos {
@@ -14,7 +14,7 @@ export class LuaCheckLuaInfos {
 
     public check(
         luaInfos: Array<LFrag>, parentLuaInfo: LFrag) {
-        if (!EXMgr.luaOperatorCheck) {
+        if (!ExtMgr.luaOperatorCheck) {
             return
         }
         if (luaInfos.length == 1) {

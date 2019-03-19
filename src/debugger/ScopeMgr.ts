@@ -1,11 +1,4 @@
 import { Scope } from 'vscode-debugadapter'
-import { DebugProtocol } from 'vscode-debugprotocol'
-import { readFileSync } from 'fs'
-import { basename } from 'path'
-import { BPMgr } from "./BPMgr"
-import { EventEmitter } from 'events'
-import * as net from 'net'
-import * as childProcess from 'child_process'
 import { NetMgr, LuaDebuggerEvent } from './NetMgr'
 import { LuaDebug } from './LuaDebug'
 
@@ -546,4 +539,3 @@ export class ScopeMgr {
 		this.luaProcess_.sendMsg(event)
 	}
 }
-

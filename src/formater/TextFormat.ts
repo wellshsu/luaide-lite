@@ -1,6 +1,5 @@
-import { Range } from 'vscode-languageclient'
-import { LFrag, LToken, LTT, LComment, LRange, LET, LError } from '../context/LEntity'
-import { EXMgr } from '../context/EXMgr';
+import { LToken, LTT, LComment, LRange, LET, LError } from '../parser/LEntity'
+import { ExtMgr } from '../context/ExtMgr';
 var querystring = require('querystring')
 
 export class TextFormat {
@@ -573,7 +572,7 @@ export class TextFormat {
     //这里需要检查 是否为 ..
     var value: any = 0;
     if ('0' === character && 'xX'.indexOf(next || null) >= 0) {
-      if (EXMgr.formatHex) {
+      if (ExtMgr.formatHex) {
         value = this.readHexLiteral(token)
         if (token.error != null) {
           return token

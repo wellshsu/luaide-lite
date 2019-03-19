@@ -1,9 +1,9 @@
-import { LToken } from "../context/LEntity";
+import { LToken } from "../parser/LEntity";
 import crypto = require("crypto");
 import path = require("path")
 import fs = require("fs")
 import { workspace } from "vscode";
-import { EXMgr } from "../context/EXMgr";
+import { ExtMgr } from "../context/ExtMgr";
 import { Helper } from "../context/Helper";
 
 export class PToken {
@@ -21,7 +21,7 @@ export class PTokenMgr {
         let hash = crypto.createHash("md5")
         hash.update(new Buffer(workspace.rootPath, "binary"))
         PTokenMgr.MD5 = hash.digest("hex")
-        PTokenMgr.LocalRoot = path.join(EXMgr.extensionPath, "res/cache")
+        PTokenMgr.LocalRoot = path.join(ExtMgr.extensionPath, "res/cache")
         PTokenMgr.LocalFile = path.join(PTokenMgr.LocalRoot, PTokenMgr.MD5 + ".ptoken")
         let json
         if (fs.existsSync(PTokenMgr.LocalFile)) {

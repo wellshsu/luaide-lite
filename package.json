@@ -3,7 +3,7 @@
 	"displayName": "luaide-lite",
 	"description": "Lite and free, but more professional.",
 	"license": "MIT",
-	"version": "0.1.7",
+	"version": "0.1.8",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/hsu2017/luaide-lite"
@@ -30,13 +30,14 @@
 		"format",
 		"luaide",
 		"unity",
-		"cocos"
+		"cocos",
+		"emmylua"
 	],
 	"activationEvents": [
 		"onLanguage:lua",
 		"onLanguage:typescript"
 	],
-	"main": "./out/src/extension",
+	"main": "./out/src/extension.js",
 	"contributes": {
 		"breakpoints": [
 			{
@@ -65,7 +66,7 @@
 							"runtimeType": {
 								"type": "string",
 								"default": "Cocos2",
-								"description": "Runtime type\n运行时类型",
+								"description": "Runtime type\n运行时类型.",
 								"enum": [
 									"Cocos2",
 									"Cocos3",
@@ -75,23 +76,23 @@
 							},
 							"port": {
 								"type": "number",
-								"description": "Required: remote debugger port\n必填: 远程调试端口",
+								"description": "Required: remote debugger port\n必填: 远程调试端口.",
 								"default": 7003
 							},
 							"mainFile": {
 								"type": "string",
-								"description": "Example: src/main.lua\n例如: src/main.lua 需要启动的lua文件\nCocos中如果指定了commandLine则可以不设定",
+								"description": "Example: src/main.lua\n例如: src/main.lua 需要启动的lua文件\nCocos中如果指定了commandLine则可以不设定.",
 								"default": "${file}"
 							},
 							"exePath": {
 								"type": "string",
-								"description": "Example: Path/to/exe\n填写可执行文件路径",
+								"description": "Example: Path/to/exe\n填写可执行文件路径.",
 								"default": ""
 							},
 							"printType": {
 								"type": "number",
 								"default": 1,
-								"description": "Required: 1-console && sys, 2-console, 3-sys\n必填: 1-控制台和系统输出, 2-控制台输出, 3-系统输出",
+								"description": "Required: 1-console && sys, 2-console, 3-sys\n必填: 1-控制台和系统输出, 2-控制台输出, 3-系统输出.",
 								"enum": [
 									1,
 									2,
@@ -101,7 +102,7 @@
 							"printDate": {
 								"type": "boolean",
 								"default": true,
-								"description": "Is add date before log content."
+								"description": "If add date before log content.\n日志内容是否前缀日期."
 							},
 							"localRoot": {
 								"type": "string",
@@ -109,7 +110,7 @@
 							},
 							"commandLine": {
 								"type": "array",
-								"description": "command args\n--命令行参数",
+								"description": "command args\n--命令行参数.",
 								"default": [
 									"-workdir ${workspaceRoot}",
 									"-file src/main.lua"
@@ -127,7 +128,7 @@
 							"runtimeType": {
 								"type": "string",
 								"default": "Unity",
-								"description": "Runtime type\n运行时类型",
+								"description": "Runtime type\n运行时类型.",
 								"enum": [
 									"Unity",
 									"Cocos2",
@@ -141,7 +142,7 @@
 							"printType": {
 								"type": "number",
 								"default": 1,
-								"description": "Required: 1-console && sys, 2-console, 3-sys\n必填: 1-控制台和系统输出, 2-控制台输出, 3-系统输出",
+								"description": "Required: 1-console && sys, 2-console, 3-sys\n必填: 1-控制台和系统输出, 2-控制台输出, 3-系统输出.",
 								"enum": [
 									1,
 									2,
@@ -151,11 +152,11 @@
 							"printDate": {
 								"type": "boolean",
 								"default": true,
-								"description": "Is add date before log content."
+								"description": "If add date before log content.\n日志内容是否前缀日期."
 							},
 							"port": {
 								"type": "number",
-								"description": "Required: remote debugger port\n必填: 远程调试端口",
+								"description": "Required: remote debugger port\n必填: 远程调试端口.",
 								"default": 7003
 							}
 						}
@@ -324,7 +325,7 @@
 				"luaide-lite.core": {
 					"type": "string",
 					"default": "emmy",
-					"description": "emmy-'emmylua core',legacy-'old core'.\n设置代码提示版本,emmy-'emmylua版本',legacy-'旧版本'."
+					"description": "emmy-'emmylua core',legacy-'old core'.\n设置代码解析库,emmy-'emmylua版本',legacy-'旧版本'."
 				},
 				"luaide-lite.javahome": {
 					"type": "string",
@@ -441,6 +442,11 @@
 					"items": {
 						"type": "object"
 					}
+				},
+				"luaide-lite.debugLanguageServer": {
+					"type": "boolean",
+					"default": false,
+					"description": "Debug language server(For developer).\n是否调试LSP(面向开发者)."
 				}
 			}
 		}
@@ -452,18 +458,19 @@
 		"test": "node ./node_modules/vscode/bin/test"
 	},
 	"devDependencies": {
-		"typescript": "^2.0.3",
-		"vscode": "^1.1.10",
-		"mocha": "^2.3.3",
-		"@types/node": "^6.0.40",
 		"@types/mocha": "^2.2.32",
+		"@types/node": "^7.0.43",
 		"@types/socket.io": "^1.4.27",
-		"@types/socket.io-client": "^1.4.27"
+		"@types/socket.io-client": "^1.4.27",
+		"mocha": "^2.3.3",
+		"ts-loader": "^5.3.3",
+		"typescript": "^2.0.3",
+		"vscode": "^1.1.22"
 	},
 	"dependencies": {
-		"vscode-languageclient": "5.1.0",
-		"vscode-debugadapter": "1.31.0",
-		"vscode-debugprotocol": "1.31.0",
-		"rd": "^1.1.2"
+		"rd": "^1.1.2",
+		"vscode-debugadapter": "^1.31.0",
+		"vscode-debugprotocol": "^1.31.0",
+		"vscode-languageclient": "^5.1.0"
 	}
 }

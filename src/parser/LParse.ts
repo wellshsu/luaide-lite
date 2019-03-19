@@ -1,5 +1,4 @@
-import { Range } from 'vscode-languageclient'
-import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT } from '../context/LEntity'
+import { LFrag, LToken, LTT, LFT } from './LEntity'
 import { LParseHelper } from './LParseHelper'
 import { LuaTableParse } from './LuaTableParse'
 import { LuaFunctionParse } from './LuaFunctionParse'
@@ -7,10 +6,9 @@ import { LuaIfLogic } from './LuaIfLogic'
 import { LFileMgr } from '../provider/LFileMgr'
 import { LuaWhileLogic } from './LuaWhileLogic'
 import { LuaForLogic } from './LuaForLogic'
-import { Helper } from '../context/Helper'
 import { LuaFunctionCall } from '../parser/LuaFunctionCall'
-import { LFile, CompletionItemSimpleInfo } from "../provider/LFile"
-import { EXMgr } from '../context/EXMgr'
+import { LFile } from "../provider/LFile"
+import { ExtMgr } from '../context/ExtMgr'
 import { LuaCheckReturn } from './LuaCheckReturn'
 import { LuaLeftCheck } from './LuaLeftCheck'
 import { LuaCheckUnary } from './LuaCheckUnary'
@@ -70,7 +68,7 @@ export class LParse {
     this.errorFilePaths = new Array<vscode.Uri>();
     this.fileMgr = new LFileMgr();
     this.diagnosticCollection = diagnosticCollection;
-    this.lpt = new LParseHelper(this);
+    this.lpt = new LParseHelper();
     this.luaTableParse = new LuaTableParse(this);
     this.luaFunctionParse = new LuaFunctionParse(this)
     this.luaIfLogic = new LuaIfLogic(this)
@@ -91,7 +89,7 @@ export class LParse {
     this.luaFuncitonCheck = new LuaFuncitonCheck(this);
     this.luaCheckDoEnd = new LuaCheckDoEnd(this)
 
-    var tempFile = path.join(EXMgr.extensionPath, "res", "parse.temp")
+    var tempFile = path.join(ExtMgr.extensionPath, "res", "parse.temp")
     this.currentUri = vscode.Uri.parse(tempFile)
     LParse.checkTempFilePath = tempFile
   }
@@ -395,7 +393,7 @@ export class LParse {
     if (startToen == null) {
       startToen = token;
     }
-    if (EXMgr.enableDiagnostic) {
+    if (ExtMgr.enableDiagnostic) {
       var starPo: vscode.Position = new vscode.Position(startToen.line, startToen.range.start - startToen.lineStart)
       var endPo: vscode.Position = new vscode.Position(token.line, token.range.end - token.lineStart)
       var range: vscode.Range = new vscode.Range(starPo, endPo)

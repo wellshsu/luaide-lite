@@ -2,9 +2,8 @@ import { EventEmitter } from 'events'
 import * as net from 'net'
 import * as childProcess from 'child_process'
 import { LuaDebug, DebugMode } from './LuaDebug'
-var path = require('path')
 var fs = require('fs')
-import { TerminatedEvent, OutputEvent, Event, Breakpoint } from 'vscode-debugadapter'
+import { TerminatedEvent, OutputEvent } from 'vscode-debugadapter'
 
 export enum LuaDebuggerEvent {
     S2C_SetBreakPoints = 1, // 断点设置成功
@@ -46,7 +45,6 @@ export class NetMgr extends EventEmitter {
     public loadLuaCallBack: Function
     private jsonStrs: Map<net.Socket, string>
     public port: number
-    private debugprocess: childProcess.ChildProcess
     private socketState: ClientStatus
     public delayMsgs: Array<any>
 

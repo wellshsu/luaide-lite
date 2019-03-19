@@ -1,6 +1,6 @@
 import vscode = require('vscode')
 import { LCItem } from "../provider/LCItem"
-import { EXMgr } from "../context/EXMgr"
+import { ExtMgr } from "../context/ExtMgr"
 var ospath = require("path")
 
 export class LFItem {
@@ -67,7 +67,7 @@ export class LFItem {
         str = str.replace(new RegExp("/", "gm"), ".")
         var str_1 = str.toLowerCase()
 
-        EXMgr.scriptRoots.forEach(scriptPath => {
+        ExtMgr.scriptRoots.forEach(scriptPath => {
             var scriptPath_1 = scriptPath;
 
             var index = str_1.indexOf(scriptPath_1)

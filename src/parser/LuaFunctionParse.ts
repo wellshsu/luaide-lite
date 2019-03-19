@@ -1,7 +1,7 @@
-import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT } from '../context/LEntity'
+import { LFrag, LToken, LTT, LComment, LRange, LET, LError, LFT } from './LEntity'
 import { LParse } from './LParse'
 import { Helper } from '../context/Helper'
-import { EXMgr } from "../context/EXMgr"
+import { ExtMgr } from "../context/ExtMgr"
 import { format } from 'util';
 
 export class LuaFunctionParse {
@@ -112,7 +112,7 @@ export class LuaFunctionParse {
             if (paramToken.type == LTT.Identifier || paramToken.type == LTT.VarargLiteral) {
                 isFist = false;
                 var index = luaInfo.addParam(paramToken.value)
-                if (EXMgr.luaFunArgCheck) {
+                if (ExtMgr.luaFunArgCheck) {
                     if (index > -1) {
                         this.lp.setError(paramToken, "param '" + paramToken.value + "' already exists  at " + index)
                         return false;

@@ -1,4 +1,4 @@
-import { LFrag, LVT, LToken, LTT, LComment, LRange, LET, LError, LFT } from '../context/LEntity'
+import { LFrag, LVT, LToken, LTT, LComment, LRange, LET, LError, LFT } from './LEntity'
 import { LParse } from './LParse'
 /**验证 是否为一个可以复制的 token */
 export class LuaValidateConstValue {

@@ -16,18 +16,18 @@
 * 智能提示: 支持查找引用, 重构, 定义跳转, 文件符号, 变量颜色高亮等.
 
 ## 【代码调试】
-* 多平台调试: 支持cocos, lua51, tolua, slua, xlua 等, 调试示例在群文件中, 环境配置请参考各示例的README.md文件.
+* 多平台调试: 支持cocos, lua51, tolua, slua, xlua 等, 调试示例在群文件或Github中下载, 环境配置请参考各示例的README.md文件.
 * 单文件调试: 支持使用Lua51调试demo.
 * 条件断点: 支持设置表达式以及断点次数.
 
 ## 【辅助功能】
 * 解析库切换: 设置 'luaide-lite.core' 以指定代码解析工具, emmy-使用emmylua库解析工程, legacy-使用既有版本解析工程.
 * To Typescript: 将Lua代码转换为Typescript.
-* 模板文件: 在设置中添加 'templateDir' 和 'templateDefine' 以指定模板文件目录以及全局文本替换字段, 在工程结构目录右键选择 'Lua/New Template' 以创建模板文件
+* 模板文件: 在设置中添加 'templateDir' 和 'templateDefine' 以指定模板文件目录以及全局文本替换字段, 在工程结构目录右键选择 'Lua/New Template' 以创建模板文件.
 
 # Fulllist | 完整列表
 * 标准格式化: [稳定] 与 IntelliJ IDEA 平台的 EmmyLua 格式化结果一致, 参考VS的格式化标准, 设置'enableFormat'以启用或禁用格式化, 你可以选择其他的格式化库, 例如vscode-lua.
-* 远程调试: [稳定][继承] 使用Socket传送断点数据, 调试示例在群文件中, 包含cocos, lua51, tolua, slua, xlua 等, 环境配置请参考各示例的README.md文件.
+* 远程调试: [稳定][继承] 使用Socket传送断点数据, 调试示例在群文件或Github中下载, 包含cocos, lua51, tolua, slua, xlua 等, 环境配置请参考各示例的README.md文件.
 * 代码检查: [稳定][继承] 标准的代码检查.
 * 智能代码提示: [稳定][继承] 代码片段, 代码完成提示, 全局提示, 定义跳转.
 * 注解: [稳定][继承] 引用自 EmmyLua and LDoc.
@@ -61,7 +61,17 @@
 * The version upgrade will be slowed down caused by many personal matters.
 * The new version of vscode will mark file red if error occurs in it, i've fixed many code parse issues, if error still occurs, please set "luaide-lite.enableDiagnostic" = false directly.
 
-# 0.1.7 [See Changelog] | 详细请查阅版本记录
+# 0.1.8 [See Changelog] | 详细请查阅版本记录
+* 修复调试堆栈显示错误问题(常发生于同文件内F10跳转).
+* 优化 'luaide-lite.exclude' 设置, 同时支持lagacy和emmy两种模式, 如果内存占用过高请设置该选项以忽略不常用的文件(夹).
+* 优化 'Legacy' 代码结构, 方便有兴趣的同学学习, 后续将继续梳理代码结构.
+* 新增天气显示.
+* Fix incorrect stacktrace request.
+* Optimize 'luaide-lite.exclude', support legacy and emmy mode.
+* Optimize 'Legacy' code structure.
+* Add weather feature.
+
+# 0.1.7
 * 新增 'luaide-lite.core' 设置, 你可以指定不同版本的代码解析工具, emmy-使用emmylua库解析工程, legacy-使用既有版本解析工程.
 * 修改插件图标, 增加辨识度.
 * Add 'luaide-lite.core', use it to translate lua to typescript.
@@ -295,5 +305,6 @@
 * vsce package
 * vsce publish
 * vsce unpublish (publisher name).(extension name)
-* code --install-extension luaide-lite-0.1.7.vsix
+* code --install-extension luaide-lite-0.1.8.vsix
 * https://marketplace.visualstudio.com/manage/
+* https://code.visualstudio.com/api/working-with-extensions/bundling-extension

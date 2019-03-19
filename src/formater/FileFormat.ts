@@ -1,7 +1,7 @@
 import { Stats } from "fs"
 import { Uri } from "vscode"
 import { TextFormat } from "./TextFormat"
-import { EXMgr } from '../context/EXMgr'
+import { ExtMgr } from '../context/ExtMgr'
 import vscode = require('vscode')
 
 var libfs = require("fs")
@@ -9,7 +9,7 @@ var rd = require('rd');
 
 export class FileFormat {
     public static process(e) {
-        if (!EXMgr.enableFormat) {
+        if (!ExtMgr.enableFormat) {
             vscode.window.showWarningMessage("Enable format setting 'luaide-lite.enableFormat:true'")
             return
         }
