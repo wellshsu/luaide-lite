@@ -4,7 +4,7 @@
 [![](https://vsmarketplacebadge.apphb.com/rating-short/wellshsu.luaide-lite.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=wellshsu.luaide-lite)
 * Author: Wells Hsu
 * Email: wellshsu@outlook.com
-* QQ Group(QQ群): 621598820
+* QQ群: 621598820
 * Github: https://github.com/hsu2017/luaide-lite
 
 # Features | 功能特性
@@ -25,6 +25,20 @@
 * To Typescript: 将Lua代码转换为Typescript.
 * 模板文件: 在设置中添加 'templateDir' 和 'templateDefine' 以指定模板文件目录以及全局文本替换字段, 在工程结构目录右键选择 'Lua/New Template' 以创建模板文件.
 
+# FAQ | 常见问题
+* 插件不流畅以及符号重复定义如何解决?
+    * 请检查一下插件列表, 确保其他lua插件是禁用的.
+* 插件是否会持续更新?
+    * 插件不定期更新, 有严重问题的可以告知我, 我会尽量安排时间修复.
+* 工程有很多解析异常的文件怎么解决?
+    * 由于新版本vscode会将有错误的文件标记为红色, 导致部分同学的工程有很多报错, 目前已经修复大部分解析问题, 如果代码分析还存在问题, 你可以设置 "luaide-lite.enableDiagnostic" = false 直接禁用代码分析.
+* 较大的工程占用很多内存怎么办?
+    * 插件在内存这方面还没有做优化, 你可以通过设置 'luaide-lite.exclude' 该选项以忽略不常用的文件(夹), 同时支持lagacy和emmy两种模式.
+* 是否有使用教程?
+    * 插件没有使用教程, 但是有示例工程, 包含cocos, lua51, tolua, slua, xlua 等, 在群文件或Github中下载.
+* 是否支持luajit调试?
+    * 支持, 在你的lua工程里面引用LuaDebug.lua即可, 其他的参考示例工程.
+   
 # Fulllist | 完整列表
 * 标准格式化: [稳定] 与 IntelliJ IDEA 平台的 EmmyLua 格式化结果一致, 参考VS的格式化标准, 设置'enableFormat'以启用或禁用格式化, 你可以选择其他的格式化库, 例如vscode-lua.
 * 远程调试: [稳定][继承] 使用Socket传送断点数据, 调试示例在群文件或Github中下载, 包含cocos, lua51, tolua, slua, xlua 等, 环境配置请参考各示例的README.md文件.
@@ -51,17 +65,15 @@
 * Lua51 Debug: [Stable] support use lua51 to debug single demo.
 * Conditional breakpoint: [Stable] support expression and hit count.
 
-# Note that | 注意事项
-* luaide-lite现已开源, 各位同学可自行修改, 引用请注明出处.
-* 有部分同学反馈插件不流畅以及符号重复定义等未知问题, 请检查一下插件列表, 确保其他lua插件是禁用的.
-* 由于作者近期个人事务较多, 版本更新较慢, 请各位谅解, 有严重问题的可以告知我, 我会尽量安排时间修复.
-* 由于新版本vscode会将有错误的文件标记为红色, 导致部分同学的工程有很多报错, 目前已经修复大部分解析问题, 如果代码分析还存在问题, 你可以设置 "luaide-lite.enableDiagnostic" = false 直接禁用代码分析.
-* luaide-lite is now open source.
-* Please ensure that other lua extensions are diabled to avoid some unknown issues.
-* The version upgrade will be slowed down caused by many personal matters.
-* The new version of vscode will mark file red if error occurs in it, i've fixed many code parse issues, if error still occurs, please set "luaide-lite.enableDiagnostic" = false directly.
+# 0.1.9 [See Changelog] | 详细请查阅版本记录
+* 新增 'luaide-lite.showWeather' 设置, 默认关闭天气功能.
+* 新增 'luaide-lite.debugLanguageServer' 设置, 是否调试LSP(面向开发者), 默认关闭.
+* 修改 README.md
+* Add 'luaide-lite.showWeather', default is false.
+* Add 'luaide-lite.debugLanguageServer', default is false.
+* Modify README.md
 
-# 0.1.8 [See Changelog] | 详细请查阅版本记录
+# 0.1.8
 * 修复调试堆栈显示错误问题(常发生于同文件内F10跳转).
 * 优化 'luaide-lite.exclude' 设置, 同时支持lagacy和emmy两种模式, 如果内存占用过高请设置该选项以忽略不常用的文件(夹).
 * 优化 'Legacy' 代码结构, 方便有兴趣的同学学习, 后续将继续梳理代码结构.
@@ -305,6 +317,6 @@
 * vsce package
 * vsce publish
 * vsce unpublish (publisher name).(extension name)
-* code --install-extension luaide-lite-0.1.8.vsix
+* code --install-extension luaide-lite-0.1.9.vsix
 * https://marketplace.visualstudio.com/manage/
 * https://code.visualstudio.com/api/working-with-extensions/bundling-extension

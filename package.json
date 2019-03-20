@@ -3,7 +3,7 @@
 	"displayName": "luaide-lite",
 	"description": "Lite and free, but more professional.",
 	"license": "MIT",
-	"version": "0.1.8",
+	"version": "0.1.9",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/hsu2017/luaide-lite"
@@ -447,6 +447,11 @@
 					"type": "boolean",
 					"default": false,
 					"description": "Debug language server(For developer).\n是否调试LSP(面向开发者)."
+				},
+				"luaide-lite.showWeather": {
+					"type": "boolean",
+					"default": false,
+					"description": "If show today's weather?.\n是否显示天气, 默认关闭."
 				}
 			}
 		}

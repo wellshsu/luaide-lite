@@ -1,3 +1,11 @@
+# 0.1.9 [2019.03.20]
+* 新增 'luaide-lite.showWeather' 设置, 默认关闭天气功能.
+* 新增 'luaide-lite.debugLanguageServer' 设置, 是否调试LSP(面向开发者), 默认关闭.
+* 修改 README.md
+* Add 'luaide-lite.showWeather', default is false.
+* Add 'luaide-lite.debugLanguageServer', default is false.
+* Modify README.md
+
 # 0.1.8 [2019.03.19]
 * 修复调试堆栈显示错误问题(常发生于同文件内F10跳转).
 * 优化 'luaide-lite.exclude' 设置, 同时支持lagacy和emmy两种模式, 如果内存占用过高请设置该选项以忽略不常用的文件(夹).

@@ -51,7 +51,8 @@ export class ExtMgr {
     public static isLegacy: boolean = false
     public static isFocused: boolean
     public static isDevMode: boolean = false
-    public static debugLanguageServer: boolean = true
+    public static debugLanguageServer: boolean = false
+    public static showWeather: boolean = false
     public static bar: vscode.StatusBarItem
 
     public static Commands = [
@@ -161,6 +162,7 @@ export class ExtMgr {
         ExtMgr.darkGlobal = config.get<string>("theme.dark.global")
         ExtMgr.darkAnnotation = config.get<string>("theme.dark.annotation")
         ExtMgr.debugLanguageServer = config.get<boolean>("debugLanguageServer")
+        ExtMgr.showWeather = config.get<boolean>("showWeather")
         // single script root.
         let scriptRoot = vscode.workspace.rootPath.replace(/\\/g, "/")
         scriptRoot = scriptRoot.replace(new RegExp("/", "gm"), ".")
@@ -217,6 +219,9 @@ export class ExtMgr {
         }
         if (ExtMgr.debugLanguageServer == null) {
             ExtMgr.debugLanguageServer = false
+        }
+        if (ExtMgr.showWeather == null) {
+            ExtMgr.showWeather = false
         }
 
         ExtMgr.templateDir = config.get<string>("templateDir")
@@ -317,12 +322,12 @@ export class ExtMgr {
 
     public static onReady() {
         ExtMgr.bar.text = ExtMgr.extensionName + " ✔"
-        if (ExtMgr.isFreshDay) {
-            this.showWeather()
+        if (ExtMgr.isFreshDay && ExtMgr.showWeather) {
+            this.doShowWeather()
         }
     }
 
-    private static showWeather() {
+    private static doShowWeather() {
         http.get("http://ip.taobao.com/service/getIpInfo.php?ip=myip", function (res) {
             let ret = ""
             res.on("data", function (data) {
