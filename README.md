@@ -38,6 +38,8 @@
     * 插件没有使用教程, 但是有示例工程, 包含cocos, lua51, tolua, slua, xlua 等, 在群文件或Github中下载.
 * 是否支持luajit调试?
     * 支持, 在你的lua工程里面引用LuaDebug.lua即可, 其他的参考示例工程.
+* 网狐框架或其他Cocos-lua游戏无法调试?
+    * https://www.jianshu.com/p/bcf94dcac9dd?tdsourcetag=s_pcqq_aiomsg, 在AppDelegate.cpp->register_all_packages注册luaopen_lua_extensions_cjson(tolua_S);
    
 # Fulllist | 完整列表
 * 标准格式化: [稳定] 与 IntelliJ IDEA 平台的 EmmyLua 格式化结果一致, 参考VS的格式化标准, 设置'enableFormat'以启用或禁用格式化, 你可以选择其他的格式化库, 例如vscode-lua.
