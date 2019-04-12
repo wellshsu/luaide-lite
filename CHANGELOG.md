@@ -1,3 +1,11 @@
+# 0.2.0 [2019.04.12]
+* 修复在 VSCode ^1.33.0 以上版本调试闪退问题.
+* Fix debugserver crash on VSCode ^1.33.0.
+
+# 0.1.9 [2019.03.20]
+* 新增 'luaide-lite.showWeather' 设置, 默认关闭天气功能.
+* Add 'luaide-lite.showWeather', default is false.
+
 # 0.1.9 [2019.03.20]
 * 新增 'luaide-lite.showWeather' 设置, 默认关闭天气功能.
 * 新增 'luaide-lite.debugLanguageServer' 设置, 是否调试LSP(面向开发者), 默认关闭.

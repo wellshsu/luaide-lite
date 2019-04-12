@@ -1,0 +1,27 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Unity-Remote",
+            "type": "lua",
+            "request": "attach",
+            "runtimeType": "Unity",
+            "localRoot": "${workspaceRoot}",
+            "port": 7003,
+            "printType": 1
+        },
+        {
+            "name": "Lua51-Launch",
+            "type": "lua",
+            "request": "launch",
+            "runtimeType": "Lua51",
+            "localRoot": "${workspaceRoot}",
+            "mainFile": "main",
+            "port": 7003,
+            "printType": 1
+        }
+    ]
+}

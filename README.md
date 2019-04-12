@@ -67,7 +67,11 @@
 * Lua51 Debug: [Stable] support use lua51 to debug single demo.
 * Conditional breakpoint: [Stable] support expression and hit count.
 
-# 0.1.9 [See Changelog] | 详细请查阅版本记录
+# 0.2.0 [See Changelog] | 详细请查阅版本记录
+* 修复在 VSCode ^1.33.0 以上版本调试闪退问题.
+* Fix debugserver crash on VSCode ^1.33.0.
+
+# 0.1.9
 * 新增 'luaide-lite.showWeather' 设置, 默认关闭天气功能.
 * 新增 'luaide-lite.debugLanguageServer' 设置, 是否调试LSP(面向开发者), 默认关闭.
 * 修改 README.md
@@ -319,6 +323,6 @@
 * vsce package
 * vsce publish
 * vsce unpublish (publisher name).(extension name)
-* code --install-extension luaide-lite-0.1.9.vsix
+* code --install-extension luaide-lite-0.2.0.vsix
 * https://marketplace.visualstudio.com/manage/
 * https://code.visualstudio.com/api/working-with-extensions/bundling-extension

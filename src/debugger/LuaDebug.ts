@@ -45,7 +45,6 @@ export class LuaDebug extends DebugSession {
 		response.body = response.body || {}
 		response.body.supportsSetVariable = false
 		response.body.supportsConfigurationDoneRequest = true
-		response.body.supportsFunctionBreakpoints = true
 		response.body.supportsConditionalBreakpoints = true
 		response.body.supportsRestartFrame = true
 		response.body.supportsCompletionsRequest = true
