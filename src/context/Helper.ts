@@ -1,4 +1,3 @@
-
 import cp = require('child_process')
 import vscode = require('vscode')
 import { LParse } from '../parser/LParse'
@@ -16,23 +15,23 @@ export class Helper {
     }
 
     public static IsLineTerminate(charCode): boolean {
-        return 10 === charCode || 13 === charCode;
+        return 10 === charCode || 13 === charCode
     }
 
     public static IsIdentifierStart(charCode): boolean {
-        return (charCode >= 65 && charCode <= 90) || (charCode >= 97 && charCode <= 122) || 95 === charCode;
+        return (charCode >= 65 && charCode <= 90) || (charCode >= 97 && charCode <= 122) || 95 === charCode
     }
 
     public static IsIdentifierPart(charCode): boolean {
-        return (charCode >= 65 && charCode <= 90) || (charCode >= 97 && charCode <= 122) || 95 === charCode || (charCode >= 48 && charCode <= 57);
+        return (charCode >= 65 && charCode <= 90) || (charCode >= 97 && charCode <= 122) || 95 === charCode || (charCode >= 48 && charCode <= 57)
     }
 
     public static IsIdentifierValid(identifier: string): boolean {
         if (identifier == null || identifier == "") {
             return false
         } else {
-            var index = 0
-            var sig = false
+            let index = 0
+            let sig = false
             while (index < identifier.length) {
                 if (index == 0) {
                     sig = Helper.IsIdentifierStart(identifier.charCodeAt(index))
@@ -53,79 +52,79 @@ export class Helper {
     }
 
     public static GetTokens(document: vscode.TextDocument, position: vscode.Position, lpt?: LParseHelper): Array<LToken> {
-        var start: vscode.Position = new vscode.Position(0, 0)
+        let start: vscode.Position = new vscode.Position(0, 0)
         if (lpt == null) {
-            var lp: LParse = LParse.ins;
-            lpt = LParse.ins.lpt;
+            let lp: LParse = LParse.ins
+            lpt = LParse.ins.lpt
         }
-        var tokens: Array<LToken> = new Array<LToken>();
+        let tokens: Array<LToken> = new Array<LToken>()
         if (position == null) {
             lpt.reset(document.getText())
         } else {
-            var line = document.lineAt(position.line)
+            let line = document.lineAt(position.line)
             lpt.reset(document.getText(new vscode.Range(start, position)))
         }
         while (true) {
-            var token: LToken = lpt.next();
+            let token: LToken = lpt.next()
             if (token.error != null) {
-                return;
+                return
             }
             if (token.type == LTT.EOF) {
-                break;
+                break
             }
-            token.index = tokens.length;
-            tokens.push(token);
+            token.index = tokens.length
+            tokens.push(token)
         }
-        return tokens;
+        return tokens
     }
 
     public static GetComments(comments: Array<LComment>): string {
-        if (comments == null) return "";
-        var commentStr: string = "";
+        if (comments == null) return ""
+        let commentStr: string = ""
         if (comments.length == 1) {
-            return comments[0].content;
+            return comments[0].content
         }
-        for (var i: number = 0; i < comments.length; i++) {
-            var comment = comments[i].content
-            var index = comment.trim().indexOf("==");
+        for (let i: number = 0; i < comments.length; i++) {
+            let comment = comments[i].content
+            let index = comment.trim().indexOf("==")
             if (index == 0) { continue }
-            commentStr = commentStr + comment;
+            commentStr = commentStr + comment
         }
-        return commentStr;
+        return commentStr
     }
 
     public static GetDescComment(comment: string): string {
-        var commentStr: string = ""
-        var commentIndex: number = comment.indexOf("@desc")
+        let commentStr: string = ""
+        let commentIndex: number = comment.indexOf("@desc")
         if (commentIndex > -1) {
-            commentStr = comment.substring(commentIndex + 5);
+            commentStr = comment.substring(commentIndex + 5)
             commentStr = Helper.TrimComment(commentStr)
         } else {
             if (comment.indexOf("@") == 0) {
                 commentStr = ""
             } else {
-                commentStr = comment;
+                commentStr = comment
             }
         }
         return commentStr
     }
 
     public static GetFirstComments(comments: Array<LComment>): string {
-        if (comments == null) return "";
-        var commentStr: string = null;
+        if (comments == null) return ""
+        let commentStr: string = null
         if (comments.length == 1) {
-            return Helper.GetDescComment(comments[0].content);
+            return Helper.GetDescComment(comments[0].content)
         }
-        for (var i: number = 0; i < comments.length; i++) {
-            var comment = comments[i].content
-            var index = comment.trim().indexOf("==");
+        for (let i: number = 0; i < comments.length; i++) {
+            let comment = comments[i].content
+            let index = comment.trim().indexOf("==")
             if (index == 0) { continue }
             commentStr = Helper.GetDescComment(comments[i].content)
             if (commentStr != "") {
                 break
             }
         }
-        return commentStr;
+        return commentStr
     }
 
     public static TrimComment(commentStr: string): string {
@@ -138,39 +137,39 @@ export class Helper {
     }
 
     public static IgnoreEnd(index: number, tokens: Array<LToken>) {
-        var lp: LParse = LParse.ins;
-        var endCount: number = 1;
+        let lp: LParse = LParse.ins
+        let endCount: number = 1
         while (index >= 0) {
-            var token: LToken = tokens[index]
-            index--;
+            let token: LToken = tokens[index]
+            index--
             if (lp.Compare('do', token, LTT.Keyword) ||
                 lp.Compare('then', token, LTT.Keyword) ||
                 lp.Compare('', token, LTT.Keyword)
             ) {
-                endCount--;
+                endCount--
                 if (endCount == 0) {
-                    return index;
+                    return index
                 }
 
             } else if (lp.Compare('end', token, LTT.Keyword)) {
-                endCount++;
+                endCount++
             }
         }
         return index
     }
 
     public static GetCurrentFunctionName(tokens: Array<LToken>): Array<string> {
-        var lp: LParse = LParse.ins;
-        var funNames: Array<string> = new Array<string>();
-        var index = tokens.length - 1
+        let lp: LParse = LParse.ins
+        let funNames: Array<string> = new Array<string>()
+        let index = tokens.length - 1
         while (index >= 0) {
-            var token: LToken = tokens[index]
+            let token: LToken = tokens[index]
             index--
             if (token.type == LTT.Keyword && token.value == "function") {
-                var nextIndex = token.index + 1
+                let nextIndex = token.index + 1
                 if (nextIndex < tokens.length) {
-                    var nextToken: LToken = tokens[nextIndex]
-                    var funName = ""
+                    let nextToken: LToken = tokens[nextIndex]
+                    let funName = ""
                     if (nextToken.type == LTT.Punctuator && nextToken.value == "(") {
                         funName = format("Anonymous(%d:%d)", token.line, token.lineStart)
                     } else {
@@ -193,11 +192,11 @@ export class Helper {
                 index = Helper.IgnoreEnd(index, tokens)
             }
         }
-        var newFunNames: Array<string> = new Array<string>();
-        for (var i = 0; i < funNames.length; i++) {
-            var fn = "";
-            for (var j = funNames.length - 1; j > i; j--) {
-                fn += funNames[j] + "->";
+        let newFunNames: Array<string> = new Array<string>()
+        for (let i = 0; i < funNames.length; i++) {
+            let fn = ""
+            for (let j = funNames.length - 1; j > i; j--) {
+                fn += funNames[j] + "->"
             }
             fn += funNames[i]
             newFunNames.push(fn)
@@ -206,63 +205,63 @@ export class Helper {
     }
 
     public static GetFunctionName(tokens: Array<LToken>, index: number): string {
-        var length = tokens.length - 1
-        var funName: string = ""
+        let length = tokens.length - 1
+        let funName: string = ""
         while (index < length) {
-            var token: LToken = tokens[index]
+            let token: LToken = tokens[index]
             if (token.type == LTT.Punctuator && token.value == "(") {
                 funName = funName.replace("=", "")
                 funName = funName.replace("function", "")
-                return funName;
+                return funName
             } else {
                 funName += token.value
             }
-            index++;
+            index++
         }
-        return funName;
+        return funName
     }
 
     public static GetSelfToModuleName(tokens: Array<LToken>, lp: LParse): any {
-        var index: number = tokens.length - 1;
+        let index: number = tokens.length - 1
         while (true) {
-            if (index < 0) break;
-            var token: LToken = tokens[index]
+            if (index < 0) break
+            let token: LToken = tokens[index]
             if (lp.Compare('function', token, LTT.Keyword)) {
-                var nextToken: LToken = tokens[index + 1]
+                let nextToken: LToken = tokens[index + 1]
                 if (nextToken.type == LTT.Identifier) {
-                    var nextToken1: LToken = tokens[index + 2]
+                    let nextToken1: LToken = tokens[index + 2]
                     if (lp.Compare(':', nextToken1, LTT.Punctuator)) {
-                        var moduleName: string = nextToken.value;
-                        var data = { moduleName: moduleName, token: nextToken };
+                        let moduleName: string = nextToken.value
+                        let data = { moduleName: moduleName, token: nextToken }
                         return data
                     }
                     else index--
                 } else {
-                    index--;
+                    index--
 
                 }
             } else {
-                index--;
+                index--
             }
         }
         return null
     }
 
     public static GetParamComment(param: string, comments: Array<LComment>) {
-        var paramName: string = "@" + param + "";
-        for (var i: number = 0; i < comments.length; i++) {
-            var comment = comments[i].content
+        let paramName: string = "@" + param + ""
+        for (let i: number = 0; i < comments.length; i++) {
+            let comment = comments[i].content
             if (comment.indexOf(paramName) > -1) {
                 comment = comment.replace(paramName, "")
                 comment = Helper.TrimComment(comment)
-                return comment;
+                return comment
             }
         }
-        return "";
+        return ""
     }
 
     public static ShowInExplorer(path) {
-        var command = null;
+        let command = null
         switch (process.platform) {
             case 'linux':
                 command = 'xdg-open ' + path
@@ -280,7 +279,7 @@ export class Helper {
     }
 
     public static FormatDate(date: Date, fmt) {
-        var o = {
+        let o = {
             "M+": date.getMonth() + 1, //月份           
             "d+": date.getDate(), //日           
             "h+": date.getHours() % 12 == 0 ? 12 : date.getHours() % 12, //小时           
@@ -289,8 +288,8 @@ export class Helper {
             "s+": date.getSeconds(), //秒           
             "q+": Math.floor((date.getMonth() + 3) / 3), //季度           
             "S": date.getMilliseconds() //毫秒           
-        };
-        var week = {
+        }
+        let week = {
             "0": "/u65e5",
             "1": "/u4e00",
             "2": "/u4e8c",
@@ -298,19 +297,19 @@ export class Helper {
             "4": "/u56db",
             "5": "/u4e94",
             "6": "/u516d"
-        };
+        }
         if (/(y+)/.test(fmt)) {
-            fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+            fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length))
         }
         if (/(E+)/.test(fmt)) {
-            fmt = fmt.replace(RegExp.$1, ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "/u661f/u671f" : "/u5468") : "") + week[date.getDay() + ""]);
+            fmt = fmt.replace(RegExp.$1, ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "/u661f/u671f" : "/u5468") : "") + week[date.getDay() + ""])
         }
-        for (var k in o) {
+        for (let k in o) {
             if (new RegExp("(" + k + ")").test(fmt)) {
-                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)))
             }
         }
-        return fmt;
+        return fmt
     }
 
     public static DELETE(arr: Array<any>, idx: number) {

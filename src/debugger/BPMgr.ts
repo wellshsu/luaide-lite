@@ -4,7 +4,6 @@ import { LuaDebug } from './LuaDebug'
 import { Breakpoint } from 'vscode-debugadapter'
 
 export class BPMgr {
-
 	private currentText: string
 	private vindex: number
 	private bpLines = new Map<string, Array<number>>()
@@ -22,30 +21,30 @@ export class BPMgr {
 	}
 
 	public getNextBPID() {
-		return ++this.bpID;
+		return ++this.bpID
 	}
 
 	public getAllClientBreakPointInfo() {
-		var data = []
+		let data = []
 		this.bpLines.forEach((v, k) => {
-			var path = k
-			var info = this.getClientBreakPointInfo(path)
+			let path = k
+			let info = this.getClientBreakPointInfo(path)
 			data.push(info)
-		});
-		return data;
+		})
+		return data
 	}
 
 	public getClientBreakPointInfo(path): any {
 		path = path.replace(/\\/g, "/")
 		if (this.bpLines.has(path)) {
-			var lines = this.bpLines.get(path)
-			var info = this.luaDebug.convertToClientPath(path, lines)
+			let lines = this.bpLines.get(path)
+			let info = this.luaDebug.convertToClientPath(path, lines)
 			if (info) {
-				var meta = this.bpMetas.get(path)
+				let meta = this.bpMetas.get(path)
 				if (meta) {
-					for (var i = 0; i < info.lines.length; i++) {
-						for (var j = 0; j < meta.length; j++) {
-							var bp = meta[j]
+					for (let i = 0; i < info.lines.length; i++) {
+						for (let j = 0; j < meta.length; j++) {
+							let bp = meta[j]
 							if (bp.line == info.lines[i]) {
 								// condition and hitCondition means different between Win8.1 and Win7 & OS X
 								if (bp.condition) {
@@ -82,185 +81,186 @@ export class BPMgr {
 			}
 			return info
 		}
-		return null;
+		return null
 	}
 
 	public verifiedBreakPoint(path: string, berakLines: Array<number>, sbps: Array<DebugProtocol.SourceBreakpoint>) {
-		this.line = 1;
+		this.line = 1
 		this.currentText = readFileSync(path).toString()
-		this.length = this.currentText.length;
-		this.vindex = 0;
-		this.lines = new Array<number>();
+		this.length = this.currentText.length
+		this.vindex = 0
+		this.lines = new Array<number>()
 		while (true) {
 			this.isAddLine = true
-			var charCode = this.currentText.charCodeAt(this.vindex)
-			var next = this.currentText.charCodeAt(this.vindex + 1);
+			let charCode = this.currentText.charCodeAt(this.vindex)
+			let next = this.currentText.charCodeAt(this.vindex + 1)
 			if (charCode == 45 && next == 45) {
-				this.scanComment();
-				this.skipWhiteSpace();
+				this.scanComment()
+				this.skipWhiteSpace()
 			} else {
 				this.lineContent += this.currentText.charAt(this.vindex)
 				if (!this.consumeEOL()) {
-					this.vindex++;
+					this.vindex++
 				}
 			}
 			if (this.vindex >= this.length) {
-				this.addLine();
-				break;
+				this.addLine()
+				break
 			}
 		}
-		var count = this.lines.length;
-		var bps = new Array<Breakpoint>();
-		var lines = new Array<number>();
-		for (var index = 0; index < berakLines.length; index++) {
+		let count = this.lines.length
+		let bps = new Array<Breakpoint>()
+		let lines = new Array<number>()
+		for (let index = 0; index < berakLines.length; index++) {
 			this.addBreakPoint(berakLines[index], bps, lines)
 		}
 		path = path.replace(/\\/g, "/")
 		this.bpLines.set(path, lines)
 		this.bpMetas.set(path, sbps)
-		return bps;
+		return bps
 	}
 
 	private addBreakPoint(line: number, bps: Array<Breakpoint>, lines: Array<number>) {
-		for (var index = 0; index < this.lines.length; index++) {
-			var fline = this.lines[index];
+		for (let index = 0; index < this.lines.length; index++) {
+			let fline = this.lines[index]
 			if (fline >= line) {
 				if (lines.indexOf(fline) == -1) {
-					const bp: DebugProtocol.Breakpoint = new Breakpoint(true, fline);
-					lines.push(fline);
-					bps.push(bp);
+					const bp: DebugProtocol.Breakpoint = new Breakpoint(true, fline)
+					lines.push(fline)
+					bps.push(bp)
 					bp.id = this.getNextBPID()
 					bp.verified = true
 				}
-				break;
+				break
 			}
 		}
 	}
 
 	private addLine() {
-		this.lineContent = this.lineContent.trim();
+		this.lineContent = this.lineContent.trim()
 		if (this.lineContent.length > 0) {
 			this.lines.push(this.line)
-			this.lineContent = "";
+			this.lineContent = ""
 		}
 	}
 
 	private scanComment(): void {
-		//  this.tokenStart = this.vindex;
+		//  this.tokenStart = this.vindex
 		this.isAddLine = false
-		this.vindex += 2;
+		this.vindex += 2
 		//当前字符
-		var character = this.currentText.charAt(this.vindex);
+		let character = this.currentText.charAt(this.vindex)
 		//注释内容
-		var content;
+		let content
 		// 是否为长注释  --[[  长注释 ]]
-		var isLong = false;
-		var commentStart = this.vindex;
+		let isLong = false
+		let commentStart = this.vindex
 		if ('[' == character) {
-			content = this.readLongString();
+			content = this.readLongString()
 			if (content == false) {
-				content = character;
+				content = character
 			}
 			else {
-				isLong = true;
+				isLong = true
 			}
 		}
 		if (!isLong) {
 			while (this.vindex < this.length) {
-				if (this.isLineTerminator(this.currentText.charCodeAt(this.vindex))) break;
-				this.vindex++;
+				if (this.isLineTerminator(this.currentText.charCodeAt(this.vindex))) break
+				this.vindex++
 			}
 		}
 	}
 
 	private readLongString(): any {
 		//多少个  等于符号
-		var level: number = 0;
+		let level: number = 0
 		//注释内容  
-		var content: string = '';
-		var terminator: boolean = false;
-		var character: string = null;
-		var stringStart: number = 0;
-		this.vindex++; //将位置移到 需要判断的字符  上已阶段以及判断到了 [
+		let content: string = ''
+		let terminator: boolean = false
+		let character: string = null
+		let stringStart: number = 0
+		this.vindex++ //将位置移到 需要判断的字符  上已阶段以及判断到了 [
 		// 获取等于符号的多少
 		while ('=' === this.currentText.charAt(this.vindex + level)) {
-			level++;
+			level++
 		}
 		// 如果是[ 那么继续 如果不为 [ 那么 直接返回
 		if ('[' !== this.currentText.charAt(this.vindex + level)) {
-			return false;
+			return false
 		}
-		this.vindex += level + 1;
+		this.vindex += level + 1
 		if (this.isLineTerminator(this.currentText.charCodeAt(this.vindex))) {
-			this.consumeEOL();
+			this.consumeEOL()
 		}
 		//注释开始的位置
-		stringStart = this.vindex;
+		stringStart = this.vindex
 		// 读取注释内容
 		while (this.vindex < this.length) {
 			while (true) {
 				if (this.isLineTerminator(this.currentText.charCodeAt(this.vindex))) {
-					this.consumeEOL();
+					this.consumeEOL()
 				} else {
-					break;
+					break
 				}
 			}
-			character = this.currentText.charAt(this.vindex++);
+			character = this.currentText.charAt(this.vindex++)
 			if (']' == character) {
-				terminator = true;
-				for (var i = 0; i < level; i++) {
+				terminator = true
+				for (let i = 0; i < level; i++) {
 					if ('=' !== this.currentText.charAt(this.vindex + i)) {
-						terminator = false;
+						terminator = false
 					}
 				}
 				if (']' !== this.currentText.charAt(this.vindex + level)) {
-					terminator = false;
+					terminator = false
 				}
 			}
-			if (terminator) break;
+			if (terminator) break
 		}
 		if (terminator) {
-			content += this.currentText.slice(stringStart, this.vindex - 1);
-			this.vindex += level + 1;
-			this.lineContent = "";
-			return content;
-		} return false;
+			content += this.currentText.slice(stringStart, this.vindex - 1)
+			this.vindex += level + 1
+			this.lineContent = ""
+			return content
+		}
+		return false
 	}
 
 	public isLineTerminator(charCode): boolean {
-		return 10 === charCode || 13 === charCode;
+		return 10 === charCode || 13 === charCode
 	}
 
 	private skipWhiteSpace(): void {
 		while (this.vindex < this.length) {
-			var charCode = this.currentText.charCodeAt(this.vindex);
+			let charCode = this.currentText.charCodeAt(this.vindex)
 			if (this.isWhiteSpace(charCode)) {
-				this.vindex++;
+				this.vindex++
 			}
 			else if (!this.consumeEOL()) {
-				break;
+				break
 			}
 		}
 	}
 
 	private consumeEOL(): boolean {
-		var charCode = this.currentText.charCodeAt(this.vindex);
-		var peekCharCode = this.currentText.charCodeAt(this.vindex + 1);
+		let charCode = this.currentText.charCodeAt(this.vindex)
+		let peekCharCode = this.currentText.charCodeAt(this.vindex + 1)
 		if (this.isLineTerminator(charCode)) {
-			if (10 === charCode && 13 === peekCharCode) this.vindex++;
-			if (13 === charCode && 10 === peekCharCode) this.vindex++;
+			if (10 === charCode && 13 === peekCharCode) this.vindex++
+			if (13 === charCode && 10 === peekCharCode) this.vindex++
 			if (this.isAddLine) {
-				this.addLine();
+				this.addLine()
 			}
-			this.line++;
+			this.line++
 			++this.vindex
-			return true;
+			return true
 		}
-		return false;
+		return false
 	}
 
 	public isWhiteSpace(charCode): boolean {
-		return 9 === charCode || 32 === charCode || 0xB === charCode || 0xC === charCode;
+		return 9 === charCode || 32 === charCode || 0xB === charCode || 0xC === charCode
 	}
 
 }

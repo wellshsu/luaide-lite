@@ -1,9 +1,8 @@
 import { EventEmitter } from 'events'
 import * as net from 'net'
-import * as childProcess from 'child_process'
 import { LuaDebug, DebugMode } from './LuaDebug'
-var fs = require('fs')
 import { TerminatedEvent, OutputEvent } from 'vscode-debugadapter'
+const fs = require('fs')
 
 export enum LuaDebuggerEvent {
     S2C_SetBreakPoints = 1, // 断点设置成功
@@ -63,17 +62,17 @@ export class NetMgr extends EventEmitter {
 
     public runLuaScript(data, callBack: Function) {
         this.loadLuaCallBack = callBack
-        var socket = this.luaDebug.isHitBreak == true ? this.mainSocket : this.breakPointSocket
+        let socket = this.luaDebug.isHitBreak == true ? this.mainSocket : this.breakPointSocket
         this.sendMsg(LuaDebuggerEvent.S2C_LoadLuaScript, data, socket)
     }
 
     public checkStackTopFileIsExist(stackInfo) {
-        var path = stackInfo.src
+        let path = stackInfo.src
         if (path.indexOf(".lua") == -1) {
             path = path + ".lua"
         }
         path = this.luaDebug.convertToServerPath(stackInfo.src)
-        var isEx = fs.existsSync(path)
+        let isEx = fs.existsSync(path)
         if (path == "" || !fs.existsSync(path)) {
             return false
         } else {
@@ -82,10 +81,10 @@ export class NetMgr extends EventEmitter {
     }
 
     public createServer(restart) {
-        var that = this
+        let that = this
         this.jsonStrs = new Map<net.Socket, string>()
-        var luaProcess: NetMgr = this
-        var luaDebug: LuaDebug = this.luaDebug
+        let luaProcess: NetMgr = this
+        let luaDebug: LuaDebug = this.luaDebug
         this.delayMsgs = new Array<any>()
         this.server = net.createServer(function (socket) {
             luaProcess.setSocketState(ClientStatus.connected)
@@ -97,15 +96,15 @@ export class NetMgr extends EventEmitter {
                     luaDebug.sendEvent(new OutputEvent("Invalid socket data."))
                     return
                 }
-                var jsonStr: string = luaProcess.jsonStrs.get(socket)
+                let jsonStr: string = luaProcess.jsonStrs.get(socket)
                 if (jsonStr) {
                     data = jsonStr + data
                 }
                 //消息分解
-                var datas: string[] = data.split("__debugger_k0204__")
-                var jsonDatas: Array<any> = new Array<any>()
-                for (var index = 0; index < datas.length; index++) {
-                    var element = datas[index]
+                let datas: string[] = data.split("__debugger_k0204__")
+                let jsonDatas: Array<any> = new Array<any>()
+                for (let index = 0; index < datas.length; index++) {
+                    let element = datas[index]
                     if (element == "") {
                         continue
                     }
@@ -113,7 +112,7 @@ export class NetMgr extends EventEmitter {
                         continue
                     }
                     try {
-                        var jdata = JSON.parse(element)
+                        let jdata = JSON.parse(element)
                         jsonDatas.push(jdata)
                     } catch (error) {
                         jsonDatas = null
@@ -122,9 +121,9 @@ export class NetMgr extends EventEmitter {
                     }
                 }
                 luaProcess.jsonStrs.delete(socket)
-                for (var index = 0; index < jsonDatas.length; index++) {
-                    var jdata = jsonDatas[index]
-                    var event: number = jdata.event
+                for (let index = 0; index < jsonDatas.length; index++) {
+                    let jdata = jsonDatas[index]
+                    let event: number = jdata.event
                     if (event == LuaDebuggerEvent.C2S_SetBreakPoints) {
                     } else if (event == LuaDebuggerEvent.C2S_HITBreakPoint) {
                         luaDebug.isHitBreak = true
@@ -197,11 +196,11 @@ export class NetMgr extends EventEmitter {
         })
         this.server.on("error", function (exception) {
             if (exception.message.indexOf("EADDRINUSE") > -1 && restart) {
-                var client = new net.Socket()
+                let client = new net.Socket()
                 client.setEncoding("utf8")
                 client.connect(that.port, "localhost", function () {
-                    var sendMsg = { event: LuaDebuggerEvent.S2S_EADDRINUSE }
-                    var msg = JSON.stringify(sendMsg)
+                    let sendMsg = { event: LuaDebuggerEvent.S2S_EADDRINUSE }
+                    let msg = JSON.stringify(sendMsg)
                     if (client.writable) {
                         client.write(msg)
                     }
@@ -217,12 +216,12 @@ export class NetMgr extends EventEmitter {
     }
 
     public sendMsg(event: number, data?: any, socket?: net.Socket) {
-        var sendMsg = {
+        let sendMsg = {
             event: event,
             data: data
         }
         try {
-            var msg = JSON.stringify(sendMsg)
+            let msg = JSON.stringify(sendMsg)
             if (socket == null) {
                 socket = this.mainSocket
             }
@@ -235,7 +234,7 @@ export class NetMgr extends EventEmitter {
     }
 
     public sendAllBreakPoint() {
-        var infos = this.luaDebug.breakPointData.getAllClientBreakPointInfo()
+        let infos = this.luaDebug.breakPointData.getAllClientBreakPointInfo()
         this.sendMsg(LuaDebuggerEvent.S2C_SetBreakPoints, infos, this.mainSocket)
     }
 
