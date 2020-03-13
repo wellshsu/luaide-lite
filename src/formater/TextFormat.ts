@@ -400,6 +400,9 @@ export class TextFormat {
         newWrap = false
       }
     }
+    if (ExtMgr.formatUseTab) {
+      content = content.replace(/    /gm, "\t")
+    }
     this.formatComent = content
   }
 

@@ -53,6 +53,7 @@ export class ExtMgr {
     public static isDevMode: boolean = false
     public static debugLanguageServer: boolean = false
     public static showWeather: boolean = false
+    public static formatUseTab: boolean = false
     public static bar: vscode.StatusBarItem
 
     public static Commands = [
@@ -163,6 +164,7 @@ export class ExtMgr {
         ExtMgr.darkAnnotation = config.get<string>("theme.dark.annotation")
         ExtMgr.debugLanguageServer = config.get<boolean>("debugLanguageServer")
         ExtMgr.showWeather = config.get<boolean>("showWeather")
+        ExtMgr.formatUseTab = config.get<boolean>("formatUseTab")
         // single script root.
         let scriptRoot = vscode.workspace.rootPath.replace(/\\/g, "/")
         scriptRoot = scriptRoot.replace(new RegExp("/", "gm"), ".")
@@ -222,6 +224,9 @@ export class ExtMgr {
         }
         if (ExtMgr.showWeather == null) {
             ExtMgr.showWeather = false
+        }
+        if (ExtMgr.formatUseTab == null) {
+            ExtMgr.formatUseTab = false
         }
 
         ExtMgr.templateDir = config.get<string>("templateDir")

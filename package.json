@@ -3,7 +3,7 @@
 	"displayName": "luaide-lite",
 	"description": "Lite and free, but more professional.",
 	"license": "MIT",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/hsu2017/luaide-lite"
@@ -39,203 +39,191 @@
 	],
 	"main": "./out/src/extension.js",
 	"contributes": {
-		"breakpoints": [
-			{
-				"language": "lua"
-			}
-		],
-		"debuggers": [
-			{
-				"type": "lua",
-				"label": "LuaDebug",
-				"enableBreakpointsFor": {
-					"languageIds": [
-						"lua"
-					]
-				},
-				"program": "./out/src/debugger/LuaDebug.js",
-				"runtime": "node",
-				"configurationAttributes": {
-					"launch": {
-						"required": [
-							"runtimeType",
-							"localRoot",
-							"printType"
-						],
-						"properties": {
-							"runtimeType": {
-								"type": "string",
-								"default": "Cocos2",
-								"description": "Runtime type\n运行时类型.",
-								"enum": [
-									"Cocos2",
-									"Cocos3",
-									"Lua51",
-									"Shell"
-								]
-							},
-							"port": {
-								"type": "number",
-								"description": "Required: remote debugger port\n必填: 远程调试端口.",
-								"default": 7003
-							},
-							"mainFile": {
-								"type": "string",
-								"description": "Example: src/main.lua\n例如: src/main.lua 需要启动的lua文件\nCocos中如果指定了commandLine则可以不设定.",
-								"default": "${file}"
-							},
-							"exePath": {
-								"type": "string",
-								"description": "Example: Path/to/exe\n填写可执行文件路径.",
-								"default": ""
-							},
-							"printType": {
-								"type": "number",
-								"default": 1,
-								"description": "Required: 1-console && sys, 2-console, 3-sys\n必填: 1-控制台和系统输出, 2-控制台输出, 3-系统输出.",
-								"enum": [
-									1,
-									2,
-									3
-								]
-							},
-							"printDate": {
-								"type": "boolean",
-								"default": true,
-								"description": "If add date before log content.\n日志内容是否前缀日期."
-							},
-							"localRoot": {
-								"type": "string",
-								"default": "${workspaceRoot}"
-							},
-							"commandLine": {
-								"type": "array",
-								"description": "command args\n--命令行参数.",
-								"default": [
-									"-workdir ${workspaceRoot}",
-									"-file src/main.lua"
-								]
-							}
-						}
-					},
-					"attach": {
-						"required": [
-							"runtimeType",
-							"localRoot",
-							"printType"
-						],
-						"properties": {
-							"runtimeType": {
-								"type": "string",
-								"default": "Unity",
-								"description": "Runtime type\n运行时类型.",
-								"enum": [
-									"Unity",
-									"Cocos2",
-									"Cocos3"
-								]
-							},
-							"localRoot": {
-								"type": "string",
-								"default": "${workspaceRoot}"
-							},
-							"printType": {
-								"type": "number",
-								"default": 1,
-								"description": "Required: 1-console && sys, 2-console, 3-sys\n必填: 1-控制台和系统输出, 2-控制台输出, 3-系统输出.",
-								"enum": [
-									1,
-									2,
-									3
-								]
-							},
-							"printDate": {
-								"type": "boolean",
-								"default": true,
-								"description": "If add date before log content.\n日志内容是否前缀日期."
-							},
-							"port": {
-								"type": "number",
-								"description": "Required: remote debugger port\n必填: 远程调试端口.",
-								"default": 7003
-							}
-						}
-					}
-				},
-				"initialConfigurations": [
-					{
-						"name": "Unity-Remote",
-						"type": "lua",
-						"request": "attach",
-						"runtimeType": "Unity",
-						"localRoot": "${workspaceRoot}",
-						"port": 7003,
-						"printType": 1
-					},
-					{
-						"name": "Cocos-Remote",
-						"type": "lua",
-						"request": "attach",
-						"runtimeType": "Cocos2",
-						"localRoot": "${workspaceRoot}",
-						"port": 7003,
-						"printType": 1
-					},
-					{
-						"name": "Cocos-Launch",
-						"type": "lua",
-						"request": "launch",
-						"runtimeType": "Cocos2",
-						"localRoot": "${workspaceRoot}",
-						"mainFile": "src/main.lua",
-						"commandLine": [
-							"-workdir ${workspaceRoot}",
-							"-file src/main.lua"
-						],
-						"port": 7003,
-						"exePath": "Path/to/exe",
-						"printType": 1
-					},
-					{
-						"name": "Lua51-Launch",
-						"type": "lua",
-						"request": "launch",
-						"runtimeType": "Lua51",
-						"localRoot": "${workspaceRoot}",
-						"mainFile": "main",
-						"port": 7003,
-						"printType": 1
-					}
+		"breakpoints": [{
+			"language": "lua"
+		}],
+		"debuggers": [{
+			"type": "lua",
+			"label": "LuaDebug",
+			"enableBreakpointsFor": {
+				"languageIds": [
+					"lua"
 				]
-			}
-		],
-		"snippets": [
-			{
-				"language": "lua",
-				"path": "./res/snippets.json"
-			}
-		],
-		"languages": [
-			{
-				"id": "lua",
-				"extensions": [
-					".lua"
-				],
-				"aliases": [
-					"luaide-lite"
-				],
-				"configuration": "./res/languages.json"
-			}
-		],
-		"grammars": [
-			{
-				"language": "lua",
-				"scopeName": "source.lua",
-				"path": "./res/grammars.json"
-			}
-		],
-		"commands": [
-			{
+			},
+			"program": "./out/src/debugger/LuaDebug.js",
+			"runtime": "node",
+			"configurationAttributes": {
+				"launch": {
+					"required": [
+						"runtimeType",
+						"localRoot",
+						"printType"
+					],
+					"properties": {
+						"runtimeType": {
+							"type": "string",
+							"default": "Cocos2",
+							"description": "Runtime type\n运行时类型.",
+							"enum": [
+								"Cocos2",
+								"Cocos3",
+								"Lua51",
+								"Shell"
+							]
+						},
+						"port": {
+							"type": "number",
+							"description": "Required: remote debugger port\n必填: 远程调试端口.",
+							"default": 7003
+						},
+						"mainFile": {
+							"type": "string",
+							"description": "Example: src/main.lua\n例如: src/main.lua 需要启动的lua文件\nCocos中如果指定了commandLine则可以不设定.",
+							"default": "${file}"
+						},
+						"exePath": {
+							"type": "string",
+							"description": "Example: Path/to/exe\n填写可执行文件路径.",
+							"default": ""
+						},
+						"printType": {
+							"type": "number",
+							"default": 1,
+							"description": "Required: 1-console && sys, 2-console, 3-sys\n必填: 1-控制台和系统输出, 2-控制台输出, 3-系统输出.",
+							"enum": [
+								1,
+								2,
+								3
+							]
+						},
+						"printDate": {
+							"type": "boolean",
+							"default": true,
+							"description": "If add date before log content.\n日志内容是否前缀日期."
+						},
+						"localRoot": {
+							"type": "string",
+							"default": "${workspaceRoot}"
+						},
+						"commandLine": {
+							"type": "array",
+							"description": "command args\n--命令行参数.",
+							"default": [
+								"-workdir ${workspaceRoot}",
+								"-file src/main.lua"
+							]
+						}
+					}
+				},
+				"attach": {
+					"required": [
+						"runtimeType",
+						"localRoot",
+						"printType"
+					],
+					"properties": {
+						"runtimeType": {
+							"type": "string",
+							"default": "Unity",
+							"description": "Runtime type\n运行时类型.",
+							"enum": [
+								"Unity",
+								"Cocos2",
+								"Cocos3"
+							]
+						},
+						"localRoot": {
+							"type": "string",
+							"default": "${workspaceRoot}"
+						},
+						"printType": {
+							"type": "number",
+							"default": 1,
+							"description": "Required: 1-console && sys, 2-console, 3-sys\n必填: 1-控制台和系统输出, 2-控制台输出, 3-系统输出.",
+							"enum": [
+								1,
+								2,
+								3
+							]
+						},
+						"printDate": {
+							"type": "boolean",
+							"default": true,
+							"description": "If add date before log content.\n日志内容是否前缀日期."
+						},
+						"port": {
+							"type": "number",
+							"description": "Required: remote debugger port\n必填: 远程调试端口.",
+							"default": 7003
+						}
+					}
+				}
+			},
+			"initialConfigurations": [{
+					"name": "Unity-Remote",
+					"type": "lua",
+					"request": "attach",
+					"runtimeType": "Unity",
+					"localRoot": "${workspaceRoot}",
+					"port": 7003,
+					"printType": 1
+				},
+				{
+					"name": "Cocos-Remote",
+					"type": "lua",
+					"request": "attach",
+					"runtimeType": "Cocos2",
+					"localRoot": "${workspaceRoot}",
+					"port": 7003,
+					"printType": 1
+				},
+				{
+					"name": "Cocos-Launch",
+					"type": "lua",
+					"request": "launch",
+					"runtimeType": "Cocos2",
+					"localRoot": "${workspaceRoot}",
+					"mainFile": "src/main.lua",
+					"commandLine": [
+						"-workdir ${workspaceRoot}",
+						"-file src/main.lua"
+					],
+					"port": 7003,
+					"exePath": "Path/to/exe",
+					"printType": 1
+				},
+				{
+					"name": "Lua51-Launch",
+					"type": "lua",
+					"request": "launch",
+					"runtimeType": "Lua51",
+					"localRoot": "${workspaceRoot}",
+					"mainFile": "main",
+					"port": 7003,
+					"printType": 1
+				}
+			]
+		}],
+		"snippets": [{
+			"language": "lua",
+			"path": "./res/snippets.json"
+		}],
+		"languages": [{
+			"id": "lua",
+			"extensions": [
+				".lua"
+			],
+			"aliases": [
+				"luaide-lite"
+			],
+			"configuration": "./res/languages.json"
+		}],
+		"grammars": [{
+			"language": "lua",
+			"scopeName": "source.lua",
+			"path": "./res/grammars.json"
+		}],
+		"commands": [{
 				"command": "luaide-lite.toUpperCase",
 				"title": "To UpperCase"
 			},
@@ -269,8 +257,7 @@
 			}
 		],
 		"menus": {
-			"explorer/context": [
-				{
+			"explorer/context": [{
 					"command": "luaide-lite.formatFiles",
 					"group": "luaide-lite"
 				},
@@ -283,8 +270,7 @@
 					"group": "luaide-lite"
 				}
 			],
-			"editor/context": [
-				{
+			"editor/context": [{
 					"command": "luaide-lite.toUpperCase",
 					"group": "luaide-lite",
 					"when": "editorHasSelection && editorLangId == lua"
@@ -301,8 +287,7 @@
 				}
 			]
 		},
-		"keybindings": [
-			{
+		"keybindings": [{
 				"command": "luaide-lite.toUpperCase",
 				"key": "CTRL+L CTRL+U",
 				"when": "editorHasSelection && editorLangId == lua"
@@ -452,6 +437,11 @@
 					"type": "boolean",
 					"default": false,
 					"description": "If show today's weather?.\n是否显示天气, 默认关闭."
+				},
+				"luaide-lite.formatUseTab": {
+					"type": "boolean",
+					"default": false,
+					"description": "If format document by indenting tab?.\n是否使用tab来缩进代码, 默认关闭."
 				}
 			}
 		}

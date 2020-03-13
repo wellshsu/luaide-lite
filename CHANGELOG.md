@@ -1,3 +1,7 @@
+# 0.2.1 [2020.03.13]
+* 新增 'luaide-lite.formatUseTab' 设置, 控制是否使用tab来缩进代码, 默认关闭.
+* Add 'luaide-lite.formatUseTab', default is false.
+
 # 0.2.0 [2019.04.12]
 * 修复在 VSCode ^1.33.0 以上版本调试闪退问题.
 * Fix debugserver crash on VSCode ^1.33.0.

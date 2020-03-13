@@ -67,7 +67,11 @@
 * Lua51 Debug: [Stable] support use lua51 to debug single demo.
 * Conditional breakpoint: [Stable] support expression and hit count.
 
-# 0.2.0 [See Changelog] | 详细请查阅版本记录
+# 0.2.1 [2020.03.13] [See Changelog] | 详细请查阅版本记录
+* 新增 'luaide-lite.formatUseTab' 设置, 控制是否使用tab来缩进代码, 默认关闭.
+* Add 'luaide-lite.formatUseTab', default is false.
+
+# 0.2.0
 * 修复在 VSCode ^1.33.0 以上版本调试闪退问题.
 * Fix debugserver crash on VSCode ^1.33.0.
 
@@ -323,6 +327,6 @@
 * vsce package
 * vsce publish
 * vsce unpublish (publisher name).(extension name)
-* code --install-extension luaide-lite-0.2.0.vsix
+* code --install-extension luaide-lite-0.2.1.vsix
 * https://marketplace.visualstudio.com/manage/
 * https://code.visualstudio.com/api/working-with-extensions/bundling-extension
