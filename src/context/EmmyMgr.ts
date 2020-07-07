@@ -82,7 +82,7 @@ export class EmmyMgr {
             if (event.contentChanges.length == 1) {
                 let change = event.contentChanges[0]
                 if (change.text == " ") {
-                    let start = change.rangeOffset - 14
+                    let start = change.rangeOffset - 40
                     start = start < 0 ? 0 : start
                     let end = change.rangeOffset - 1
                     let range = new vscode.Range(event.document.positionAt(start), event.document.positionAt(end))

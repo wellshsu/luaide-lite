@@ -1,6 +1,8 @@
-# 0.2.2 [2020.07.07] 
+# 0.2.2-0.2.3 [2020.07.07] 
 * **新增输入 '---@xxxx ' 触发代码补全功能(triggerSuggest).**
+* 优化 '---@xxxx ' 的匹配规则.
 * Trigger code suggest when input '---@xxxx '.
+* Optimize '---@xxxx ' match regulation.
 
 # 0.2.1 [2020.07.07] 
 * 新增 'luaide-lite.formatUseTab' 设置, 控制是否使用tab来缩进代码, 默认关闭.
