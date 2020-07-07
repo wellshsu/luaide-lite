@@ -335,6 +335,7 @@
 * npm install
 * npm install -g vsce
 * vsce package
+* vsce login wellshsu
 * vsce publish
 * vsce unpublish (publisher name).(extension name)
 * code --install-extension luaide-lite-0.2.1.vsix
