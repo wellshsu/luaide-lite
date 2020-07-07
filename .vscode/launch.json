@@ -1,8 +1,7 @@
 // A launch configuration that compiles the extension and then opens it inside a new window
 {
     "version": "0.1.0",
-    "configurations": [
-        {
+    "configurations": [{
             "name": "Extension",
             "type": "extensionHost",
             "request": "launch",
@@ -36,13 +35,11 @@
             ]
         },
     ],
-    "compounds": [
-        {
-            "name": "Extension + Server",
-            "configurations": [
-                "Extension",
-                "Server"
-            ]
-        }
-    ]
+    "compounds": [{
+        "name": "Extension + Server",
+        "configurations": [
+            "Extension",
+            "Server"
+        ]
+    }]
 }

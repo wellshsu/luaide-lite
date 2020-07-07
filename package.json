@@ -1,7 +1,7 @@
 {
 	"name": "luaide-lite",
 	"displayName": "luaide-lite",
-	"description": "Lite and free, but more professional.",
+	"description": "Lua developement and debug tools.",
 	"license": "MIT",
 	"version": "0.2.1",
 	"repository": {
@@ -45,11 +45,6 @@
 		"debuggers": [{
 			"type": "lua",
 			"label": "LuaDebug",
-			"enableBreakpointsFor": {
-				"languageIds": [
-					"lua"
-				]
-			},
 			"program": "./out/src/debugger/LuaDebug.js",
 			"runtime": "node",
 			"configurationAttributes": {
@@ -399,6 +394,14 @@
 					"type": "array",
 					"default": [],
 					"description": "Exclude specific file(s) or folder(s).\n需要排除的文件夹, 这些文件夹将不会被解析.",
+					"items": {
+						"type": "string"
+					}
+				},
+				"luaide-lite.apiFolders": {
+					"type": "array",
+					"default": [],
+					"description": "API define's directory(relative/absolute).\nAPI提示文件路径(相对/绝对).",
 					"items": {
 						"type": "string"
 					}

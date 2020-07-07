@@ -27,11 +27,8 @@ export class LuaDebug extends DebugSession {
 	public exConfig: any
 	private scopeMgr: ScopeMgr
 	private pathMaps: Map<string, Array<string>>
-	private lastStackReqTime = -1
 
-	get breakPointData(): BPMgr {
-		return this.bpMgr
-	}
+	get breakPointData(): BPMgr { return this.bpMgr }
 
 	public constructor() {
 		super()
@@ -62,25 +59,22 @@ export class LuaDebug extends DebugSession {
 	}
 
 	protected setupProcessHanlders() {
-		this.netMgr.on('C2S_HITBreakPoint', result => {
+		this.netMgr.on("C2S_HITBreakPoint", result => {
 			this.scopeMgr.setStackInfos(result.data.stack)
-			this.sendEvent(new StoppedEvent('breakpoint', 1))
+			this.sendEvent(new StoppedEvent("breakpoint", 1))
 		})
-		this.netMgr.on('C2S_LuaPrint', result => {
-			let content = new Buffer(result.data.msg, 'base64').toString('utf8')
+		this.netMgr.on("C2S_LuaPrint", result => {
+			let content = new Buffer(result.data.msg, "base64").toString("utf8")
 			if (this.printDate) {
 				content = this.FormatDate(new Date(), "[yyyy-MM-dd hh:mm:ss] ") + content
 			}
 			if (result.data.type == 1) {
-				this.sendEvent(new OutputEvent(content + "\n", 'stdout'))
-			}
-			else if (result.data.type == 2) {
-				this.sendEvent(new OutputEvent(content + "\n", 'console'))
-			}
-			else if (result.data.type == 3) {
-				this.sendEvent(new OutputEvent(content + "\n", 'stderr'))
-			}
-			else {
+				this.sendEvent(new OutputEvent(content + "\n", "stdout"))
+			} else if (result.data.type == 2) {
+				this.sendEvent(new OutputEvent(content + "\n", "console"))
+			} else if (result.data.type == 3) {
+				this.sendEvent(new OutputEvent(content + "\n", "stderr"))
+			} else {
 				this.sendEvent(new OutputEvent(content + "\n"))
 			}
 		})
@@ -114,14 +108,14 @@ export class LuaDebug extends DebugSession {
 
 		let that: LuaDebug = this
 		this.luaStartProc = proc.exec()
-		this.luaStartProc.on('error', error => {
-			this.sendEvent(new OutputEvent("Process error: " + error.message + "\n"))
+		this.luaStartProc.on("error", error => {
+			this.sendEvent(new OutputEvent("LuaDebug->launchRequest.proc.error: " + error.message + "\n"))
 		})
-		this.luaStartProc.stderr.setEncoding('utf8')
-		this.luaStartProc.stderr.on('data', error => {
+		this.luaStartProc.stderr.setEncoding("utf8")
+		this.luaStartProc.stderr.on("data", error => {
 			that.sendEvent(new OutputEvent(error + "\n"))
 		})
-		this.luaStartProc.on('close', function (code) {
+		this.luaStartProc.on("close", function (code) {
 			if (that.netMgr) {
 				that.netMgr.sendMsg(LuaDebuggerEvent.S2C_DebugClose)
 			}
@@ -151,7 +145,7 @@ export class LuaDebug extends DebugSession {
 	}
 
 	protected disconnectRequest(response: DebugProtocol.DisconnectResponse, args: DebugProtocol.DisconnectArguments): void {
-		this.sendEvent(new OutputEvent("Server is shutdown.\n"))
+		this.sendEvent(new OutputEvent("LuaDebug Server has been terminated!"))
 		if (this.luaStartProc) {
 			this.luaStartProc.kill("SIGUP")
 		}
@@ -183,8 +177,6 @@ export class LuaDebug extends DebugSession {
 	}
 
 	protected stackTraceRequest(response: DebugProtocol.StackTraceResponse, args: DebugProtocol.StackTraceArguments): void {
-		let currentTime = Date.now()
-		let deltaTime = currentTime - this.lastStackReqTime
 		let stackInfos: Array<any> = this.scopeMgr.getStackInfos()
 		const frames = new Array<StackFrame>()
 		for (let i = 0; i < stackInfos.length; i++) {
@@ -219,10 +211,7 @@ export class LuaDebug extends DebugSession {
 			stackFrames: frames,
 			totalFrames: frames.length
 		}
-		if (deltaTime > 500) {
-			this.lastStackReqTime = currentTime
-			this.sendResponse(response)
-		}
+		this.sendResponse(response)
 	}
 
 	protected scopesRequest(response: DebugProtocol.ScopesResponse, args: DebugProtocol.ScopesArguments): void {
@@ -276,8 +265,7 @@ export class LuaDebug extends DebugSession {
 					}
 					that.sendResponse(response)
 				})
-		}
-		else {
+		} else {
 			this.sendResponse(response)
 		}
 	}
@@ -305,7 +293,7 @@ export class LuaDebug extends DebugSession {
 		try {
 			this.scopeMgr.stepReq(callBackFun, LuaDebuggerEvent.S2C_NextRequest)
 		} catch (error) {
-			this.sendEvent(new OutputEvent("nextRequest error:" + error))
+			this.sendEvent(new OutputEvent("LuaDebug->nextRequest: " + error))
 		}
 		this.sendResponse(response)
 	}
@@ -407,13 +395,6 @@ export class LuaDebug extends DebugSession {
 			}
 			return
 		}
-		if (args.context == "repl" && args.expression == ">load") {
-			// this.luaProcess.runLuaScript({ luastr: "Helper.LogError(a)", frameId: args.frameId }, function (body) {
-			// 	response.body = body
-			// 	luadebug.sendResponse(response)
-			// })
-			return
-		}
 		let index: number = 1
 		let scopesManager = this.scopeMgr
 		const callBackFun = function (body) {
@@ -421,10 +402,10 @@ export class LuaDebug extends DebugSession {
 				index++
 				if (index > 3) {
 					response.body =
-						{
-							result: "nil",
-							variablesReference: 0
-						}
+					{
+						result: "nil",
+						variablesReference: 0
+					}
 					luadebug.sendResponse(response)
 				} else {
 					scopesManager.evaluateRequest(frameId, expression, index, callBackFun, args.context)
@@ -459,8 +440,7 @@ export class LuaDebug extends DebugSession {
 					})
 				}
 			}
-		}
-		else {
+		} else {
 			this.sendResponse(response)
 		}
 	}
@@ -483,7 +463,6 @@ export class LuaDebug extends DebugSession {
 		}
 		let clientPaths = path.split("/")
 		let isHit: boolean = true
-		let hitServerPath = ""
 		let pathHitCount: Array<number> = new Array<number>()
 		for (let index = 0; index < paths.length; index++) {
 			let serverPath = paths[index]
@@ -523,7 +502,6 @@ export class LuaDebug extends DebugSession {
 		let nindex: number = path.lastIndexOf("/")
 		let fileName: string = path.substring(nindex + 1)
 		let extname = ospath.extname(path)
-		let baseName = ospath.basename(path)
 		fileName = fileName.substr(0, fileName.length - extname.length) + ".lua"
 		path = path.substr(0, path.length - extname.length) + ".lua"
 		let pathinfo = {
@@ -542,8 +520,7 @@ export class LuaDebug extends DebugSession {
 		let runtimeType: string = args.runtimeType
 		if (runtimeType == "Lua51") {
 			return true
-		}
-		else if (runtimeType == "Cocos2" || runtimeType == "Cocos3") {
+		} else if (runtimeType == "Cocos2" || runtimeType == "Cocos3") {
 			// Cocos
 			if (!fs.existsSync(args.exePath)) {
 				return "Exe does not exist: " + args.exePath

@@ -17,7 +17,7 @@ export class ExtMgr {
     public static LANGUAGE_ID = "lua"
     public static extensionID = "wellshsu.luaide-lite"
     public static extensionName = "luaide-lite"
-    public static slogan = "Lite and free, but more professional."
+    public static slogan = "Lite & Free"
 
     public static luaOperatorCheck: boolean
     public static luaFunArgCheck: boolean
@@ -35,6 +35,7 @@ export class ExtMgr {
     public static templateDir: string
     public static templateDefine: Map<string, string>
     public static excludes: Array<string>
+    public static apiFolders: Array<string>
     public static formatHex: boolean
     public static enableDiagnostic: boolean
     public static typescriptDefine: Map<string, string>
@@ -252,6 +253,19 @@ export class ExtMgr {
         if (excludes) {
             excludes.forEach((v) => {
                 ExtMgr.excludes.push(path.normalize(path.join(vscode.workspace.rootPath, v)).replace(/\\/g, "/").replace(/\/\//g, "/").toLowerCase())
+            })
+        }
+        ExtMgr.apiFolders = new Array<string>()
+        let apiFolders: Array<string> = config.get<Array<string>>("apiFolders")
+        if (apiFolders) {
+            apiFolders.forEach((v) => {
+                let p = v.toLowerCase()
+                if (!fs.existsSync(p)) {
+                    p = path.resolve(path.join(vscode.workspace.rootPath, p))
+                }
+                if (fs.existsSync(p)) {
+                    ExtMgr.apiFolders.push(p)
+                }
             })
         }
 

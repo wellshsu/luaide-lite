@@ -85,7 +85,6 @@ export class LuaDebugVarInfo {
 export class ScopeMgr {
 	private stackInfos: Array<any>
 	private variableHandles_: Array<LuaDebugVarInfo>
-	private luaDebugVarInfos: Array<LuaDebugVarInfo>
 	private luaProcess_: NetMgr
 	private golbalLuaDebugVarInfo_: LuaDebugVarInfo
 	private reqVarsCallFunMap: Map<number, Array<Function>>
@@ -103,7 +102,6 @@ export class ScopeMgr {
 		this.luaProcess_ = luaProcess
 		this.variableHandles_ = new Array<LuaDebugVarInfo>()
 		this.reqVarsCallFunMap = new Map<number, Array<Function>>()
-		this.luaDebugVarInfos = new Array<LuaDebugVarInfo>()
 		this.localVarsLuaDebugVarInfos = new Map<number, LuaDebugVarInfo>()
 		this.upVarsLuaDebugVarInfos = new Map<number, LuaDebugVarInfo>()
 		this.luaDebug = luaDebug
@@ -120,7 +118,6 @@ export class ScopeMgr {
 			}
 		})
 		this.reqVarsCallFunMap.clear()
-		this.luaDebugVarInfos = new Array<LuaDebugVarInfo>()
 		this.localVarsLuaDebugVarInfos.clear()
 		this.upVarsLuaDebugVarInfos.clear()
 		this.golbalLuaDebugVarInfo_ = null
@@ -130,27 +127,21 @@ export class ScopeMgr {
 		this.luaProcess_.on('C2S_ReqVar', result => {
 			this.resVarsInfos(result.data)
 		})
-		//
 		this.luaProcess_.on('C2S_NextResponse', result => {
-
 			this.setStackInfos(result.data.stack)
 			this.stepRes(LuaDebuggerEvent.C2S_NextResponse)
 		})
-		//下一步结束
+		// 下一步结束
 		this.luaProcess_.on('S2C_NextResponseOver', result => {
 			this.stackInfos = null
 			this.stepOverReq()
 		})
-		/**
-		 * 单步跳出
-		 */
+		// 单步跳出
 		this.luaProcess_.on('C2S_StepInResponse', result => {
-
 			this.setStackInfos(result.data.stack)
 			this.stepRes(LuaDebuggerEvent.C2S_StepInResponse)
 		})
 		this.luaProcess_.on('C2S_StepOutResponse', result => {
-
 			this.setStackInfos(result.data.stack)
 			this.stepRes(LuaDebuggerEvent.C2S_StepOutResponse)
 		})
@@ -227,7 +218,6 @@ export class ScopeMgr {
 			variablesReference: upLuaDebugInfo.variablesReference,
 			expensive: false
 		})
-		let golbalLuaDebugVarInfo = this.getGolbalLuaDebugVarInfo()
 		scopes.push({
 			name: this.golbalLuaDebugVarInfo_.name,
 			variablesReference: this.golbalLuaDebugVarInfo_.variablesReference,
@@ -236,66 +226,10 @@ export class ScopeMgr {
 		return scopes
 	}
 
-	//解码的方法
-	private base64decode(str) {
-		let base64EncodeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-		let base64DecodeChars = new Array(
-			-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-			-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-			-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63,
-			52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1,
-			-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-			15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1,
-			-1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
-			41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1)
-		let c1, c2, c3, c4
-		let i, len, out
-		len = str.length
-		i = 0
-		out = ""
-		while (i < len) {
-
-			do {
-				c1 = base64DecodeChars[str.charCodeAt(i++) & 0xff]
-			} while (i < len && c1 == -1)
-			if (c1 == -1)
-				break
-
-			do {
-				c2 = base64DecodeChars[str.charCodeAt(i++) & 0xff]
-			} while (i < len && c2 == -1)
-			if (c2 == -1)
-				break
-			out += String.fromCharCode((c1 << 2) | ((c2 & 0x30) >> 4))
-
-			do {
-				c3 = str.charCodeAt(i++) & 0xff
-				if (c3 == 61)
-					return out
-				c3 = base64DecodeChars[c3]
-			} while (i < len && c3 == -1)
-			if (c3 == -1)
-				break
-			out += String.fromCharCode(((c2 & 0XF) << 4) | ((c3 & 0x3C) >> 2))
-
-			do {
-				c4 = str.charCodeAt(i++) & 0xff
-				if (c4 == 61)
-					return out
-				c4 = base64DecodeChars[c4]
-			} while (i < len && c4 == -1)
-			if (c4 == -1)
-				break
-			out += String.fromCharCode(((c3 & 0x03) << 6) | c4)
-		}
-		return out
-	}
-
 	public resVarsInfos(data) {
 		let vars = data.vars
 		let isComplete = data.isComplete
 		let variablesReference = data.variablesReference
-		let debugSpeedIndex = data.debugSpeedIndex
 
 		let luaDebugInfo: LuaDebugVarInfo = this.getDebugVarsInfoByVariablesReference(variablesReference)
 		if (luaDebugInfo == null) {
@@ -344,7 +278,6 @@ export class ScopeMgr {
 				}
 			}
 
-			let valueType: string = varInfo.valueType
 			name = String(name)
 			variables.push({
 				name: name,
@@ -445,7 +378,6 @@ export class ScopeMgr {
 				callFunction(null)
 				return
 			} else {
-				let variablesReference = 0
 				//找到数据
 				if (varInfo.valueType == "table" || varInfo.valueType == "userdata") {
 					//找对应的 LuaDebugVarInfo
@@ -510,8 +442,7 @@ export class ScopeMgr {
 		this.luaDebug.isHitBreak = false
 		this.luaProcess_.sendMsg(LuaDebuggerEvent.S2C_RUN, {
 			runTimeType: this.luaDebug.runtimeType,
-		}
-		)
+		})
 	}
 
 	/**

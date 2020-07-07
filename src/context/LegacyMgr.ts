@@ -8,14 +8,27 @@ import { PvdSignature } from '../provider/PvdSignature'
 import { PvdReference } from '../provider/PvdReference'
 import { PvdRefactor } from '../provider/PvdRefactor'
 import { LFItem } from '../provider/LFItem'
-const fs = require("fs")
+import * as path from "path"
+import * as fs from "fs"
 
 export class LegacyMgr {
 
     private static diagnosticCollection: vscode.DiagnosticCollection
 
     public static activate(context: vscode.ExtensionContext) {
+        try {
+            let snippetsPath = path.join(ExtMgr.extensionPath, "res/snippets.json")
+            let snippetsLegacyPath = path.join(ExtMgr.extensionPath, "res/snippets-legacy.json")
+            let fo = fs.readFileSync(snippetsPath).toString()
+            let fn = fs.readFileSync(snippetsLegacyPath).toString()
+            if (fo != fn) {
+                vscode.window.showInformationMessage("Snippets.json has been changed, please reload window to take effect.")
+                fs.writeFileSync(snippetsPath, fn)
+            }
+        } catch (err) { }
+
         LegacyMgr.diagnosticCollection = vscode.languages.createDiagnosticCollection(ExtMgr.LANGUAGE_ID)
+
         let luaParse = new LParse(LegacyMgr.diagnosticCollection)
         context.subscriptions.push(vscode.languages.registerCompletionItemProvider(ExtMgr.LUA_MODE,
             new PvdCompletion(), '.', ":", '"', "[", "@", "-"))
@@ -81,8 +94,6 @@ export class LegacyMgr {
         }
         var config = vscode.workspace.getConfiguration("files")
         for (var key in config.associations) {
-            console.log(key)
-            console.log(config.associations[key])
             if (config.associations[key] == ExtMgr.LANGUAGE_ID) {
                 maxCount++
                 var keys = key.split(".")

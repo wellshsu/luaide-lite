@@ -1,3 +1,15 @@
+# 0.2.1 [2020.07.07] 
+* 新增 'luaide-lite.formatUseTab' 设置, 控制是否使用tab来缩进代码, 默认关闭.
+* **更新 emmy 的解析库.**
+* **修复调试时快速按F10跳下一步逻辑异常(无响应).**
+* **新增 'luaide-lite.apiFolders' 设置, 支持指定 emmy api 文件目录.**
+* 优化 Snippets.json 文件, 区分 emmy 和 legacy.
+* Add 'luaide-lite.formatUseTab', default is false.
+* Update emmy library.
+* Fix step next error(unresponsive).
+* Add 'luaide-lite.apiFolders' for emmy api lint.
+* Optimize Snippets.json file.
+
 # 0.2.1 [2020.03.13]
 * 新增 'luaide-lite.formatUseTab' 设置, 控制是否使用tab来缩进代码, 默认关闭.
 * Add 'luaide-lite.formatUseTab', default is false.
@@ -5,10 +17,6 @@
 # 0.2.0 [2019.04.12]
 * 修复在 VSCode ^1.33.0 以上版本调试闪退问题.
 * Fix debugserver crash on VSCode ^1.33.0.
-
-# 0.1.9 [2019.03.20]
-* 新增 'luaide-lite.showWeather' 设置, 默认关闭天气功能.
-* Add 'luaide-lite.showWeather', default is false.
 
 # 0.1.9 [2019.03.20]
 * 新增 'luaide-lite.showWeather' 设置, 默认关闭天气功能.

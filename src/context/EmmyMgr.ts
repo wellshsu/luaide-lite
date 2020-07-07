@@ -1,8 +1,9 @@
 import * as vscode from "vscode"
-import * as path from "path"
 import { LanguageClient, LanguageClientOptions, ServerOptions } from "vscode-languageclient"
 import { ExtMgr } from "./ExtMgr"
 import { LanguageConfiguration } from "vscode"
+import * as path from "path"
+import * as fs from "fs"
 
 export interface AnnotatorParams {
     uri: string
@@ -47,6 +48,17 @@ export class EmmyMgr {
     private static decorateUpvalue: vscode.TextEditorDecorationType
 
     public static activate(context: vscode.ExtensionContext) {
+        try {
+            let snippetsPath = path.join(ExtMgr.extensionPath, "res/snippets.json")
+            let snippetsEmmyPath = path.join(ExtMgr.extensionPath, "res/snippets-emmy.json")
+            let fo = fs.readFileSync(snippetsPath).toString()
+            let fn = fs.readFileSync(snippetsEmmyPath).toString()
+            if (fo != fn) {
+                vscode.window.showInformationMessage("Snippets.json has been changed, please reload window to take effect.")
+                fs.writeFileSync(snippetsPath, fn)
+            }
+        } catch (err) { }
+
         EmmyMgr.savedContext = context
         EmmyMgr.javaExecutablePath = ExtMgr.getJavaExe()
         EmmyMgr.startClient()
@@ -90,6 +102,15 @@ export class EmmyMgr {
     }
 
     private static startClient() {
+        let folders = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.map(f => f.uri.toString()) : []
+        if (ExtMgr.apiFolders && ExtMgr.apiFolders.length > 0) {
+            for (let i = 0; i < ExtMgr.apiFolders.length; i++) {
+                let folder = ExtMgr.apiFolders[i]
+                folder = vscode.Uri.file(folder).toString()
+                folders.push(folder)
+            }
+        }
+
         const clientOptions: LanguageClientOptions = {
             documentSelector: [{ scheme: "file", language: ExtMgr.LANGUAGE_ID }],
             synchronize: {
@@ -101,7 +122,8 @@ export class EmmyMgr {
             initializationOptions: {
                 stdFolder: vscode.Uri.file(path.resolve(EmmyMgr.savedContext.extensionPath, "res/emmy/std")).toString(),
                 apiFolders: [],
-                workspaceFolders: vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.map(f => f.uri.toString()) : null,
+                workspaceFolders: folders,
+                client: "vsc",
                 exclude: ExtMgr.excludes
             }
         }

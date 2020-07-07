@@ -72,7 +72,6 @@ export class NetMgr extends EventEmitter {
             path = path + ".lua"
         }
         path = this.luaDebug.convertToServerPath(stackInfo.src)
-        let isEx = fs.existsSync(path)
         if (path == "" || !fs.existsSync(path)) {
             return false
         } else {
@@ -132,8 +131,7 @@ export class NetMgr extends EventEmitter {
                         luaProcess.emit("C2S_ReqVar", jdata)
                     } else if (event == LuaDebuggerEvent.C2S_NextResponse) {
                         luaProcess.emit("C2S_NextResponse", jdata)
-                    }
-                    else if (event == LuaDebuggerEvent.S2C_NextResponseOver) {
+                    } else if (event == LuaDebuggerEvent.S2C_NextResponseOver) {
                         luaProcess.emit("S2C_NextResponseOver", jdata)
                     } else if (event == LuaDebuggerEvent.C2S_StepInResponse) {
                         luaProcess.emit("C2S_StepInResponse", jdata)
@@ -151,14 +149,12 @@ export class NetMgr extends EventEmitter {
                             )
                             luaProcess.loadLuaCallBack = null
                         }
-                    }
-                    else if (event == LuaDebuggerEvent.C2S_DebugXpCall) {
+                    } else if (event == LuaDebuggerEvent.C2S_DebugXpCall) {
                         luaDebug.isHitBreak = true
                         luaProcess.emit("C2S_HITBreakPoint", jdata)
-                    }
-                    else if (event == LuaDebuggerEvent.C2S_SetSocketName) {
+                    } else if (event == LuaDebuggerEvent.C2S_SetSocketName) {
                         if (jdata.data.name == "mainSocket") {
-                            luaDebug.sendEvent(new OutputEvent("Client is connected.\n"))
+                            luaDebug.sendEvent(new OutputEvent("LuaDebug Client is connected.\n"))
                             luaProcess.mainSocket = socket
                             //发送断点信息
                             luaProcess.sendAllBreakPoint()
@@ -182,17 +178,17 @@ export class NetMgr extends EventEmitter {
                     }
                 }
             })
-            socket.on('error', function (exception) {
+            socket.on("error", function (exception) {
                 luaDebug.sendEvent(new OutputEvent("Socket: " + exception + "\n"))
                 luaDebug.sendEvent(new TerminatedEvent())
                 socket.end()
             })
-            socket.on('close', function (data) {
-                luaDebug.sendEvent(new OutputEvent('Client is disconnected.\n'))
+            socket.on("close", function (data) {
+                luaDebug.sendEvent(new OutputEvent("LuaDebug Client is disconnected.\n"))
             })
         }).listen(this.port)
-        this.server.on('listening', function () {
-            luaDebug.sendEvent(new OutputEvent("Server is listening " + luaProcess.server.address().port + ".\n"))
+        this.server.on("listening", function () {
+            luaDebug.sendEvent(new OutputEvent("LuaDebug Server is listening at " + luaProcess.server.address().port + ".\n"))
         })
         this.server.on("error", function (exception) {
             if (exception.message.indexOf("EADDRINUSE") > -1 && restart) {
