@@ -69,6 +69,10 @@
 * Conditional breakpoint: [Stable] support expression and hit count.
 
 # [See Changelog] | 详细请查阅版本记录
+## 0.2.2 [2020.07.07] 
+* **新增输入 '---@xxxx ' 触发代码补全功能(triggerSuggest).**
+* Trigger code suggest when input '---@xxxx '.
+
 ## 0.2.1 [2020.07.07] 
 * 新增 'luaide-lite.formatUseTab' 设置, 控制是否使用tab来缩进代码, 默认关闭.
 * **更新 emmy 的解析库.**
@@ -338,6 +342,6 @@
 * vsce login wellshsu
 * vsce publish
 * vsce unpublish (publisher name).(extension name)
-* code --install-extension luaide-lite-0.2.1.vsix
+* code --install-extension luaide-lite-0.2.2.vsix
 * https://marketplace.visualstudio.com/manage/
 * https://code.visualstudio.com/api/working-with-extensions/bundling-extension

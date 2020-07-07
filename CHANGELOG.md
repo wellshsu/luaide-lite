@@ -1,3 +1,7 @@
+# 0.2.2 [2020.07.07] 
+* **新增输入 '---@xxxx ' 触发代码补全功能(triggerSuggest).**
+* Trigger code suggest when input '---@xxxx '.
+
 # 0.2.1 [2020.07.07] 
 * 新增 'luaide-lite.formatUseTab' 设置, 控制是否使用tab来缩进代码, 默认关闭.
 * **更新 emmy 的解析库.**
@@ -9,10 +13,6 @@
 * Fix step next error(unresponsive).
 * Add 'luaide-lite.apiFolders' for emmy api lint.
 * Optimize Snippets.json file.
-
-# 0.2.1 [2020.03.13]
-* 新增 'luaide-lite.formatUseTab' 设置, 控制是否使用tab来缩进代码, 默认关闭.
-* Add 'luaide-lite.formatUseTab', default is false.
 
 # 0.2.0 [2019.04.12]
 * 修复在 VSCode ^1.33.0 以上版本调试闪退问题.
