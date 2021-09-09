@@ -198,7 +198,9 @@ export class ExtMgr {
             ExtMgr.core = "emmy"
         }
         if (ExtMgr.core == "emmy") {
-            ExtMgr.isLegacy = ExtMgr.getJavaExe() == null ? true : false
+            let javaPath = ExtMgr.getJavaExe()
+            if (!javaPath) vscode.window.showInformationMessage("java.exe coundn't been found, please configurate it in JAVA_HOME or PATH.")
+            ExtMgr.isLegacy = javaPath ? false : true
         } else {
             ExtMgr.isLegacy = true
         }
@@ -315,32 +317,46 @@ export class ExtMgr {
         try {
             if (process.platform == "win32") {
                 if (ExtMgr.javahome != null) {
-                    return path.join(ExtMgr.javahome, "bin/java.exe")
+                    let a = path.join(ExtMgr.javahome, "bin/java.exe")
+                    let b = fs.existsSync(a)
+                    if (b) return a
+
+                    a = path.join(ExtMgr.javahome, "java.exe")
+                    b = fs.existsSync(a)
+                    if (b) return a
                 }
                 if ("JAVA_HOME" in process.env) {
-                    let javaHome = <string>process.env.JAVA_HOME
-                    let javaPath = path.join(javaHome, "bin/java.exe")
-                    return javaPath
+                    let javahome = <string>process.env.JAVA_HOME
+
+                    let a = path.join(javahome, "bin/java.exe")
+                    let b = fs.existsSync(a)
+                    if (b) return a
+
+                    a = path.join(javahome, "java.exe")
+                    b = fs.existsSync(a)
+                    if (b) return a
                 }
                 if ("PATH" in process.env) {
                     let PATH = <string>process.env.PATH
-                    let paths = PATH.split("")
+                    let paths = PATH.split(";")
                     let pathCount = paths.length
                     for (let i = 0; i < pathCount; i++) {
-                        let javaPath = path.join(paths[i], "bin/java.exe")
-                        if (fs.existsSync(javaPath)) {
-                            return javaPath
-                        }
+                        let a = path.join(paths[i], "bin/java.exe")
+                        let b = fs.existsSync(a)
+                        if (b) return a
+
+                        a = path.join(paths[i], "java.exe")
+                        b = fs.existsSync(a)
+                        if (b) return a
                     }
                 }
             }
-        } catch{
-        }
+        } catch { }
         return null
     }
 
     public static onReady() {
-        ExtMgr.bar.text = ExtMgr.extensionName + " ✔"
+        ExtMgr.bar.text = ExtMgr.extensionName + "(" + ExtMgr.core + ")" + " ✔"
         if (ExtMgr.isFreshDay && ExtMgr.showWeather) {
             this.doShowWeather()
         }

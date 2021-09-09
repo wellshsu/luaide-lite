@@ -219,8 +219,8 @@ export class ScopeMgr {
 			expensive: false
 		})
 		scopes.push({
-			name: this.golbalLuaDebugVarInfo_.name,
-			variablesReference: this.golbalLuaDebugVarInfo_.variablesReference,
+			name: this.getGolbalLuaDebugVarInfo().name,
+			variablesReference: this.getGolbalLuaDebugVarInfo().variablesReference,
 			expensive: false
 		})
 		return scopes

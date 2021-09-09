@@ -1,3 +1,15 @@
+# 0.2.4 [2021.09.09] 
+* **修复调试时变量显示异常.**
+* **修复 Lua51 模式下调试异常.**
+* 新增Lua51的exePath，可自定义lua.exe.
+* 优化java.exe的检测逻辑，新增环境配置提醒.
+* 修复 kill("SIGUP") 导致的异常.(20200720)
+* Fix debug variables display exception.
+* Fix Lua51 debug exception.
+* Add exePath of Lua51.
+* Optimize java.exe check logic.
+* Fix kill("SIGUP") exception.
+
 # 0.2.2-0.2.3 [2020.07.07] 
 * **新增输入 '---@xxxx ' 触发代码补全功能(triggerSuggest).**
 * 优化 '---@xxxx ' 的匹配规则.

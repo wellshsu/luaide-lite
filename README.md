@@ -4,11 +4,12 @@
 [![](https://vsmarketplacebadge.apphb.com/rating-short/wellshsu.luaide-lite.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=wellshsu.luaide-lite)
 * Author: Wells Hsu
 * Email: wellshsu@outlook.com
-* **QQ群: 952522807 (仅供交流学习，原621598820已失效)**
 * Github: https://github.com/hsu2017/luaide-lite
 
 # Features | 功能特性
-* **legacy的解析库不再维护(推介使用emmy), debug和format会继续维护.**
+* **有问题请在github->issue中反馈，不定期查看.**
+* **legacy的解析库不再维护(推介使用emmy), debug和format模块会继续维护.**
+* **若emmy解析库不生效，请检查java环境是否配置.**
 
 ## 【代码编写】
 * **标准格式化: 与 IntelliJ IDEA 平台的 EmmyLua 格式化结果一致, 参考VS的格式化标准, 大文件格式化更快.**
@@ -34,7 +35,7 @@
 * 工程有很多解析异常的文件怎么解决?
     * 由于新版本vscode会将有错误的文件标记为红色, 导致部分同学的工程有很多报错, 目前已经修复大部分解析问题, 如果代码分析还存在问题, 你可以设置 "luaide-lite.enableDiagnostic" = false 直接禁用代码分析.
 * 较大的工程占用很多内存怎么办?
-    * 插件在内存这方面还没有做优化, 你可以通过设置 'luaide-lite.exclude' 该选项以忽略不常用的文件(夹), 同时支持lagacy和emmy两种模式.
+    * **插件在内存这方面还没有做优化, 你可以通过设置 'luaide-lite.exclude' 该选项以忽略不常用的文件(夹), 同时支持lagacy和emmy两种模式.**
 * 是否有使用教程?
     * 插件没有使用教程, 但是有示例工程, 包含cocos, lua51, tolua, slua, xlua 等, 在群文件或Github中下载.
 * 是否支持luajit调试?
@@ -69,8 +70,16 @@
 * Conditional breakpoint: [Stable] support expression and hit count.
 
 # [See Changelog] | 详细请查阅版本记录
-## 0.2.4 [2020.07.22] 
-* 修复 kill("SIGUP") 导致的异常.
+## 0.2.4 [2021.09.09] 
+* **修复调试时变量显示异常.**
+* **修复 Lua51 模式下调试异常.**
+* 新增Lua51的exePath，可自定义lua.exe.
+* 优化java.exe的检测逻辑，新增环境配置提醒.
+* 修复 kill("SIGUP") 导致的异常.(20200720)
+* Fix debug variables display exception.
+* Fix Lua51 debug exception.
+* Add exePath of Lua51.
+* Optimize java.exe check logic.
 * Fix kill("SIGUP") exception.
 
 ## 0.2.2-0.2.3 [2020.07.07] 

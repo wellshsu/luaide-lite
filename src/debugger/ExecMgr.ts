@@ -24,7 +24,7 @@ export class ExecMgr {
             let cpath = path.join(fileInfos[0], "res/debug", process.platform, "?.so")
             pathStr += "package.cpath = '" + cpath + "'"
         }
-        pathStr += "package.path = package.path .. '" + debugPath + "/?.lua" + localRoot + "/?.lua'"
+        pathStr += "package.path = package.path .. ';" + debugPath + "/?.lua;" + localRoot + "/?.lua'"
         pathStr += "print(package.path)"
         pathStr += "require('LuaDebug')('localhost'," + this.args.port + ")"
         let main: string = this.args.mainFile
@@ -33,6 +33,7 @@ export class ExecMgr {
         }
         pathStr += "require('" + main + "')"
         let luaExePath = path.join(fileInfos[0], "res/debug", process.platform, "lua")
+        if (this.args.exePath) luaExePath = this.args.exePath
         let luaStartProc = child_process.exec(luaExePath + ' -e "' + pathStr + '"')
         return luaStartProc
     }
@@ -72,23 +73,18 @@ export class ExecMgr {
         let localRoot = path.normalize(this.args.localRoot)
         if (runtimeType == "Shell") {
             luaStartProc = this.execShell()
-        }
-        else {
+        } else {
             if (os == "linux") {
-            }
-            else if (os == "darwin") {
+            } else if (os == "darwin") {
                 if (runtimeType == "Cocos2" || runtimeType == "Cocos3") {
                     luaStartProc = this.execCocos(localRoot)
-                }
-                else if (runtimeType == "Lua51") {
+                } else if (runtimeType == "Lua51") {
                     luaStartProc = this.execLua51(localRoot)
                 }
-            }
-            else if (os == "win32") {
+            } else if (os == "win32") {
                 if (runtimeType == "Lua51") {
                     luaStartProc = this.execLua51(localRoot)
-                }
-                else if (runtimeType == "Cocos2" || runtimeType == "Cocos3") {
+                } else if (runtimeType == "Cocos2" || runtimeType == "Cocos3") {
                     luaStartProc = this.execCocos(localRoot)
                 }
             }

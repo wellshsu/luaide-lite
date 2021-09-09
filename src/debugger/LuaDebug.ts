@@ -145,7 +145,7 @@ export class LuaDebug extends DebugSession {
 	}
 
 	protected disconnectRequest(response: DebugProtocol.DisconnectResponse, args: DebugProtocol.DisconnectArguments): void {
-		this.sendEvent(new OutputEvent("LuaDebug Server has been terminated!"))
+		this.sendEvent(new OutputEvent("LuaDebug Server has been terminated!\n"))
 		if (this.luaStartProc) {
 			this.luaStartProc.kill()
 		}
@@ -629,7 +629,7 @@ export class LuaDebug extends DebugSession {
 						throw port
 					}
 				})
-			} catch{ }
+			} catch { }
 		}
 		return port
 	}
@@ -639,7 +639,7 @@ export class LuaDebug extends DebugSession {
 		if (fs.existsSync(cfgFile)) {
 			try {
 				this.exConfig = require(cfgFile)
-			} catch{ }
+			} catch { }
 		}
 	}
 
