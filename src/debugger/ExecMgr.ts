@@ -1,7 +1,7 @@
 import child_process = require('child_process')
-const fs = require('fs')
-const path = require('path')
-const rd = require("rd")
+import * as  fs from "fs"
+import * as  path from "path"
+import * as rd from "rd"
 
 export class ExecMgr {
     public args: any
@@ -10,7 +10,7 @@ export class ExecMgr {
         this.args = args
     }
 
-    private execLua51(localRoot) {
+    private execLua51(localRoot: string) {
         let fileName = process.argv[1]
         let fileInfos = fileName.split("out")
         let debugPath = path.join(fileInfos[0], "res/debug/adapter")
@@ -18,8 +18,9 @@ export class ExecMgr {
         localRoot = localRoot.replace(/\\/g, "/")
         let pathStr = ""
         if (process.platform == "darwin" || process.platform == "linux") {
-            rd.eachFileFilterSync(path.join(fileInfos[0], "res/debug", process.platform), function (f, s) {
+            rd.eachFileFilterSync(path.join(fileInfos[0], "res/debug", process.platform), (f): boolean => {
                 fs.chmodSync(f, "777")
+                return true
             })
             let cpath = path.join(fileInfos[0], "res/debug", process.platform, "?.so")
             pathStr += "package.cpath = '" + cpath + "'"
@@ -28,9 +29,9 @@ export class ExecMgr {
         pathStr += "print(package.path)"
         pathStr += "require('LuaDebug')('localhost'," + this.args.port + ")"
         let main: string = this.args.mainFile
-        if (main.endsWith(".lua")) {
-            main = main.substring(0, main.length - 4)
-        }
+        main = path.relative(localRoot, main)
+        main = main.replace(/\\/g, "/")
+        if (main.endsWith(".lua")) main = main.substring(0, main.length - 4)
         pathStr += "require('" + main + "')"
         let luaExePath = path.join(fileInfos[0], "res/debug", process.platform, "lua")
         if (this.args.exePath) luaExePath = this.args.exePath
@@ -38,7 +39,7 @@ export class ExecMgr {
         return luaStartProc
     }
 
-    private execCocos(localRoot) {
+    private execCocos(localRoot: string) {
         let options = {
             encoding: 'utf8',
             shell: true

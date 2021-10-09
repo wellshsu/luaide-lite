@@ -3,7 +3,7 @@
 	"displayName": "luaide-lite",
 	"description": "Lua developement and debug tools.",
 	"license": "MIT",
-	"version": "0.2.4",
+	"version": "0.2.5",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/hsu2017/luaide-lite"
@@ -76,12 +76,12 @@
 							},
 							"mainFile": {
 								"type": "string",
-								"description": "Example: src/main.lua\n例如: src/main.lua 需要启动的lua文件\nCocos中如果指定了commandLine则可以不设定.",
+								"description": "Example: src/main.lua\n例如: src/main.lua 需要启动的lua文件\n${file}为当前文件(仅Lua51)\nCocos中如果指定了commandLine则可以不设定.",
 								"default": "${file}"
 							},
 							"exePath": {
 								"type": "string",
-								"description": "Example: Path/to/exe\n填写可执行文件路径.",
+								"description": "Example: path/to/exe\n填写可执行文件路径.",
 								"default": ""
 							},
 							"printType": {
@@ -188,7 +188,7 @@
 							"-file src/main.lua"
 						],
 						"port": 7003,
-						"exePath": "Path/to/exe",
+						"exePath": "path/to/exe",
 						"printType": 1
 					},
 					{
@@ -197,7 +197,7 @@
 						"request": "launch",
 						"runtimeType": "Lua51",
 						"localRoot": "${workspaceRoot}",
-						"mainFile": "main.lua",
+						"mainFile": "${file}",
 						"port": 7003,
 						"printType": 1
 					}

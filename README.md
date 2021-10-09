@@ -70,6 +70,10 @@
 * Conditional breakpoint: [Stable] support expression and hit count.
 
 # [See Changelog] | 详细请查阅版本记录
+## 0.2.5 [2021.10.09] 
+* **优化Lua51单文件调试，支持 ${file} 指代当前文件.**
+* Optimize Lua51 debug, use ${file} to specific current file.
+
 ## 0.2.4 [2021.09.09] 
 * **修复调试时变量显示异常.**
 * **修复 Lua51 模式下调试异常.**
@@ -357,6 +361,6 @@
 * vsce login wellshsu
 * vsce publish
 * vsce unpublish (publisher name).(extension name)
-* code --install-extension luaide-lite-0.2.4.vsix
+* code --install-extension luaide-lite-0.2.5.vsix
 * https://marketplace.visualstudio.com/manage/
 * https://code.visualstudio.com/api/working-with-extensions/bundling-extension
