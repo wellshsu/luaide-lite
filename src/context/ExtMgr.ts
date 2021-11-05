@@ -83,7 +83,7 @@ export class ExtMgr {
     public static initialize(context: ExtensionContext): boolean {
         ExtMgr.isDevMode = context.extensionPath.indexOf("wellshsu.luaide-lite") < 0
         if (vscode.workspace == null || vscode.workspace.rootPath == null) {
-            vscode.window.showInformationMessage(ExtMgr.extensionName + " does't support single lua file, please use 'Open Folder' instead.")
+            vscode.window.showErrorMessage(ExtMgr.extensionName + " doesn't support single lua file, please use 'Open Folder' instead.")
             return false
         } else {
             ExtMgr.isFocused = true
