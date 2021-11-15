@@ -581,6 +581,7 @@ local LuaDebugger = {
     isHook = true,
     pathCachePaths = {},
     isProntToConsole = 1,
+    printType = 1,
     isDebugPrint = true,
     hookType = "lrc",
     currentFileName = "",
@@ -617,10 +618,12 @@ LuaDebugger.event = {
 }
 
 function print1(...)
-    if (LuaDebugger.isProntToConsole == 1 or LuaDebugger.isProntToConsole == 3) then
+    if ((LuaDebugger.printType == 1 or LuaDebugger.printType == 3) or
+    (LuaDebugger.isProntToConsole == 1 or LuaDebugger.isProntToConsole == 3)) then
         debugger_print(...)
     end
-    if (LuaDebugger.isProntToConsole == 1 or LuaDebugger.isProntToConsole == 2) then
+    if ((LuaDebugger.printType == 1 or LuaDebugger.printType == 2) or
+    (LuaDebugger.isProntToConsole == 1 or LuaDebugger.isProntToConsole == 2)) then
         if (debug_server) then
             local arg = { ... }
             local str = ""
@@ -689,6 +692,7 @@ function luaIdePrintErr(...)
         end
     end
 end
+
 ----=============================工具方法=============================================
 local debug_hook = nil
 
@@ -1216,15 +1220,28 @@ local function debugger_getBreakVar(body, server)
         local type_ = body.type;
         local keys = body.keys;
         --找到对应的var
-        local vars = nil
+        local tvars = nil
         if (type_ == 1) then
-            vars = LuaDebugger.currentDebuggerData.vars[frameId + 1]
-            vars = vars.locals
+            tvars = LuaDebugger.currentDebuggerData.vars[frameId + 1]
+            tvars = tvars.locals
         elseif (type_ == 2) then
-            vars = LuaDebugger.currentDebuggerData.vars[frameId + 1]
-            vars = vars.ups
+            tvars = LuaDebugger.currentDebuggerData.vars[frameId + 1]
+            tvars = tvars.ups
         elseif (type_ == 3) then
-            vars = _G
+            tvars = _G
+        end
+        -- FIX(20211115)：对象新增__todebug函数以输出调试内容（protobuf字段显示问题）
+        local vars = {}
+        for k, v in pairs(tvars) do
+            if type(v) == "table" then
+                if v.__todebug then
+                    vars[k] = v:__todebug()
+                else
+                    vars[k] = v
+                end
+            else
+                vars[k] = v
+            end
         end
         --特殊处理下
         for i, v in ipairs(keys) do
@@ -1348,6 +1365,7 @@ local function debugger_loop(server)
             elseif event == LuaDebugger.event.S2C_RUN then
                 LuaDebugger.runTimeType = body.runTimeType
                 LuaDebugger.isProntToConsole = body.isProntToConsole
+                LuaDebugger.printType = body.printType
                 ResetDebugInfo()
                 LuaDebugger.Run = true
                 local data = coroutine.yield()
@@ -1739,27 +1757,46 @@ local function start()
 end
 
 function StartDebug(host, port)
+    LuaDebugger.DebugLuaFie = getLuaFileName(getinfo(1).source)
     if jit then
-        LuaDebugger.DebugLuaFie = getLuaFileName(getinfo(1).source)
         local index = LuaDebugger.DebugLuaFie:find("%.lua")
         if index then
             local fileNameLength = string.len(LuaDebugger.DebugLuaFie)
             LuaDebugger.DebugLuaFie = LuaDebugger.DebugLuaFie:sub(1, fileNameLength - 4)
-
         end
     end
-    if (not host) then
-        print("error host nil")
+
+    if not port then
+        local token = getinfo(1).source
+        if token then
+            token = token:gsub("@", "")
+            token = token:gsub("\\", "")
+            token = token:gsub("/", "")
+            token = token:gsub(":", "")
+            token = token:gsub("LuaDebug.lua", "")
+            token = token:lower()
+            port = 0
+            print(token)
+            for i = 1, #token do
+                port = port + string.byte(token:sub(i, i))
+            end
+            port = port % 10000 + 50000
+        end
     end
-    if (not port) then
-        print("error prot nil")
+
+    if not host then
+        print("debug host can not be nil")
     end
-    if (type(host) ~= "string") then
-        print("error host not string")
+    if not port then
+        print("debug port can not be nil")
     end
-    if (type(port) ~= "number") then
-        print("error host not number")
+    if type(host) ~= "string" then
+        print("debug host arg must be string")
     end
+    if type(port) ~= "number" then
+        print("debug port arg must be number")
+    end
+
     controller_host = host
     controller_port = port
     xpcall(start, function(error)

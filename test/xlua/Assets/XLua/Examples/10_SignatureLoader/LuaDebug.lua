@@ -1220,15 +1220,28 @@ local function debugger_getBreakVar(body, server)
         local type_ = body.type;
         local keys = body.keys;
         --找到对应的var
-        local vars = nil
+        local tvars = nil
         if (type_ == 1) then
-            vars = LuaDebugger.currentDebuggerData.vars[frameId + 1]
-            vars = vars.locals
+            tvars = LuaDebugger.currentDebuggerData.vars[frameId + 1]
+            tvars = tvars.locals
         elseif (type_ == 2) then
-            vars = LuaDebugger.currentDebuggerData.vars[frameId + 1]
-            vars = vars.ups
+            tvars = LuaDebugger.currentDebuggerData.vars[frameId + 1]
+            tvars = tvars.ups
         elseif (type_ == 3) then
-            vars = _G
+            tvars = _G
+        end
+        -- FIX(20211115)：对象新增__todebug函数以输出调试内容（protobuf字段显示问题）
+        local vars = {}
+        for k, v in pairs(tvars) do
+            if type(v) == "table" then
+                if v.__todebug then
+                    vars[k] = v:__todebug()
+                else
+                    vars[k] = v
+                end
+            else
+                vars[k] = v
+            end
         end
         --特殊处理下
         for i, v in ipairs(keys) do
@@ -1711,7 +1724,13 @@ end
 
 --调试开始
 local function start()
+    if not jit then
+        LuaDebugger.DebugLuaFie = getLuaFileName(getinfo(1).source)
+    end
     local socket = createSocket()
+    print(controller_host)
+    print(controller_port)
+
     local server = socket.connect(controller_host, controller_port)
     debug_server = server
     if server then
@@ -1757,6 +1776,7 @@ function StartDebug(host, port)
             token = token:gsub("LuaDebug.lua", "")
             token = token:lower()
             port = 0
+            print(token)
             for i = 1, #token do
                 port = port + string.byte(token:sub(i, i))
             end
