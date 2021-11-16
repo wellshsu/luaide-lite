@@ -267,6 +267,8 @@ export class ExtMgr {
                 }
                 if (fs.existsSync(p)) {
                     ExtMgr.apiFolders.push(p)
+                } else {
+                    vscode.window.showErrorMessage(Helper.Format("The apiFolders you set doesn't exist: {0}", v))
                 }
             })
         }
