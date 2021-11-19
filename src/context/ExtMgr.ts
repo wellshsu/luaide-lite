@@ -199,11 +199,12 @@ export class ExtMgr {
         }
         if (ExtMgr.core == "emmy") {
             let javaPath = ExtMgr.getJavaExe()
-            if (!javaPath) vscode.window.showInformationMessage("java.exe coundn't been found, please configurate it in JAVA_HOME or PATH.")
+            if (!javaPath) vscode.window.showErrorMessage("java.exe coundn't been found, please configurate it in JAVA_HOME or PATH.")
             ExtMgr.isLegacy = javaPath ? false : true
         } else {
             ExtMgr.isLegacy = true
         }
+        ExtMgr.core = ExtMgr.isLegacy ? "legacy" : "emmy"
         if (ExtMgr.lightParameter == null) {
             ExtMgr.lightParameter = "#565656"
         }
