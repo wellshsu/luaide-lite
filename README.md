@@ -70,6 +70,20 @@
 * Conditional breakpoint: [Stable] support expression and hit count.
 
 # [See Changelog] | 详细请查阅版本记录
+## 0.2.6 [2021.12.02]
+* **更新 emmy 的解析库.**
+* **优化注解补全逻辑（回删多余的命名空间/前缀）.**
+* **调试器优化（需替换LuaDebug.lua），在对象中新增__todebug()函数，用于自定义调试输出（类似protobuf字段显示等）.**
+* 新增apiFolders不存在的提示.
+* 优化java.exe无法找到的错误提示.
+* 修复core的显示错误.
+* Update emmy library.
+* Optimize annotation completion logic(elimate redundant namespace/prefix).
+* Optimize LuaDebug.lua(replace it to your project), add '_todebug()' function into object for debug variables.
+* Add hint if apiFolders doesn't exist.
+* Optimize hint if java.exe couldn't been found.
+* Fix 'core' display issue.
+
 ## 0.2.5 [2021.10.09] 
 * **优化Lua51单文件调试，支持 ${file} 指代当前文件.**
 * Optimize Lua51 debug, use ${file} to specific current file.
@@ -361,6 +375,6 @@
 * vsce login wellshsu
 * vsce publish
 * vsce unpublish (publisher name).(extension name)
-* code --install-extension luaide-lite-0.2.5.vsix
+* code --install-extension luaide-lite-0.2.6.vsix
 * https://marketplace.visualstudio.com/manage/
 * https://code.visualstudio.com/api/working-with-extensions/bundling-extension

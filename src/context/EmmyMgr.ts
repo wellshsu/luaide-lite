@@ -79,16 +79,34 @@ export class EmmyMgr {
             EmmyMgr.requestAnnotators(EmmyMgr.activeEditor, EmmyMgr.client)
         }
         try {
+            // NOTICE[20211202]: 该补丁是否会严重影响性能（每逢'.'和' '字符就会触发检测），有待观察
             if (event.contentChanges.length == 1) {
                 let change = event.contentChanges[0]
-                if (change.text == " ") {
-                    let start = change.rangeOffset - 40
-                    start = start < 0 ? 0 : start
-                    let end = change.rangeOffset - 1
-                    let range = new vscode.Range(event.document.positionAt(start), event.document.positionAt(end))
-                    let compare = event.document.getText(range)
-                    if (compare.indexOf("---@") >= 0) {
-                        vscode.commands.executeCommand("editor.action.triggerSuggest")
+                if (change.text == " " || change.text.indexOf(".") >= 0) { // 优化注解补全逻辑---@...
+                    let lstart = change.rangeOffset - 40 // 匹配行（回溯）
+                    lstart = lstart < 0 ? 0 : lstart
+                    let lend = change.rangeOffset - 1
+                    let line = event.document.getText(new vscode.Range(event.document.positionAt(lstart), event.document.positionAt(lend)))
+                    if (line.indexOf("---@") >= 0) { // 注解逻辑
+                        if (change.text == " ") { // 弹出提示
+                            vscode.commands.executeCommand("editor.action.triggerSuggest")
+                        } else { // 回删多余的命名空间
+                            let fstart = change.rangeOffset - 1
+                            let fend = change.rangeOffset
+                            let left = event.document.getText(new vscode.Range(event.document.positionAt(fstart), event.document.positionAt(fend)))
+                            if (left == ".") { // 左侧首字符为.，则判断为有前缀，剔除之
+                                let strs = line.split(" ")
+                                if (strs.length > 1) {
+                                    let prefix = strs[strs.length - 1]
+                                    let rstart = change.rangeOffset - 1 - prefix.length
+                                    let rend = rstart + change.text.length + prefix.length + 1
+                                    let editor = vscode.window.activeTextEditor
+                                    editor.edit((edit) => {
+                                        edit.replace(new vscode.Range(event.document.positionAt(rstart), event.document.positionAt(rend)), change.text)
+                                    })
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -167,8 +185,8 @@ export class EmmyMgr {
                 }
             })
             EmmyMgr.onDidChangeActiveTextEditor(vscode.window.activeTextEditor)
-        }).catch(reson => {
-            vscode.window.showErrorMessage("Failed to start language server!\n" + reson, "Try again").then(item => {
+        }).catch(reason => {
+            vscode.window.showErrorMessage("Failed to start language server!\n" + reason, "Try again").then(item => {
                 EmmyMgr.startClient()
             })
         })
