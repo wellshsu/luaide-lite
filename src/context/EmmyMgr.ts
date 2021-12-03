@@ -80,33 +80,47 @@ export class EmmyMgr {
         }
         try {
             // NOTICE[20211202]: 该补丁是否会严重影响性能（每逢'.'和' '字符就会触发检测），有待观察
+            // if (event.contentChanges.length == 1) {
+            //     let change = event.contentChanges[0]
+            //     if (change.text == " " || change.text.indexOf(".") >= 0) { // 优化注解补全逻辑---@...
+            //         let lstart = change.rangeOffset - 40 // 匹配行（回溯）
+            //         lstart = lstart < 0 ? 0 : lstart
+            //         let lend = change.rangeOffset - 1
+            //         let line = event.document.getText(new vscode.Range(event.document.positionAt(lstart), event.document.positionAt(lend)))
+            //         if (line.indexOf("---@") >= 0) { // 注解逻辑
+            //             if (change.text == " ") { // 弹出提示
+            //                 vscode.commands.executeCommand("editor.action.triggerSuggest")
+            //             } else { // 回删多余的命名空间
+            //                 let fstart = change.rangeOffset - 1
+            //                 let fend = change.rangeOffset
+            //                 let left = event.document.getText(new vscode.Range(event.document.positionAt(fstart), event.document.positionAt(fend)))
+            //                 if (left == ".") { // 左侧首字符为.，则判断为有前缀，剔除之
+            //                     let strs = line.split(" ")
+            //                     if (strs.length > 1) {
+            //                         let prefix = strs[strs.length - 1]
+            //                         let rstart = change.rangeOffset - 1 - prefix.length
+            //                         let rend = rstart + change.text.length + prefix.length + 1
+            //                         let editor = vscode.window.activeTextEditor
+            //                         editor.edit((edit) => {
+            //                             edit.replace(new vscode.Range(event.document.positionAt(rstart), event.document.positionAt(rend)), change.text)
+            //                         })
+            //                     }
+            //                 }
+            //             }
+            //         }
+            //     }
+            // }
+
+            // NOTICE[20211203]: 更新了emmy库之后上述问题已修复，上述代码留作备份
             if (event.contentChanges.length == 1) {
                 let change = event.contentChanges[0]
-                if (change.text == " " || change.text.indexOf(".") >= 0) { // 优化注解补全逻辑---@...
+                if (change.text == " ") { // 优化注解补全逻辑---@...
                     let lstart = change.rangeOffset - 40 // 匹配行（回溯）
                     lstart = lstart < 0 ? 0 : lstart
                     let lend = change.rangeOffset - 1
                     let line = event.document.getText(new vscode.Range(event.document.positionAt(lstart), event.document.positionAt(lend)))
                     if (line.indexOf("---@") >= 0) { // 注解逻辑
-                        if (change.text == " ") { // 弹出提示
-                            vscode.commands.executeCommand("editor.action.triggerSuggest")
-                        } else { // 回删多余的命名空间
-                            let fstart = change.rangeOffset - 1
-                            let fend = change.rangeOffset
-                            let left = event.document.getText(new vscode.Range(event.document.positionAt(fstart), event.document.positionAt(fend)))
-                            if (left == ".") { // 左侧首字符为.，则判断为有前缀，剔除之
-                                let strs = line.split(" ")
-                                if (strs.length > 1) {
-                                    let prefix = strs[strs.length - 1]
-                                    let rstart = change.rangeOffset - 1 - prefix.length
-                                    let rend = rstart + change.text.length + prefix.length + 1
-                                    let editor = vscode.window.activeTextEditor
-                                    editor.edit((edit) => {
-                                        edit.replace(new vscode.Range(event.document.positionAt(rstart), event.document.positionAt(rend)), change.text)
-                                    })
-                                }
-                            }
-                        }
+                        vscode.commands.executeCommand("editor.action.triggerSuggest")  // 弹出提示
                     }
                 }
             }
