@@ -3,7 +3,7 @@
 	"displayName": "luaide-lite",
 	"description": "Lua developement and debug tools.",
 	"license": "MIT",
-	"version": "0.2.6",
+	"version": "0.2.7",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/hsu2017/luaide-lite"
@@ -460,6 +460,59 @@
 					"type": "boolean",
 					"default": false,
 					"description": "If format document by indenting tab?.\n是否使用tab来缩进代码, 默认关闭."
+				},
+				"luaide-lite.emmy.completion.caseSensitive": {
+					"type": "boolean",
+					"default": false,
+					"description": "Case sensitive completion.\n代码完成提示是否大小写敏感."
+				},
+				"luaide-lite.emmy.codeLens": {
+					"type": "boolean",
+					"default": false,
+					"description": "Show codeLens or not.\n是否显示codeLens（显示引用计数）."
+				},
+				"luaide-lite.emmy.hint.paramHint": {
+					"type": "boolean",
+					"default": true,
+					"description": "Show param hint or not.\n.是否显示参数变量提示."
+				},
+				"luaide-lite.emmy.hint.localHint": {
+					"type": "boolean",
+					"default": false,
+					"description": "Show local hint or not.\n是否显示局部变量提示."
+				},
+				"luaide-lite.emmy.hint.varargHint": {
+					"type": "boolean",
+					"default": false,
+					"description": "Show vararg hint or not.\n是否显示可变参数提示."
+				},
+				"luaide-lite.emmy.constructorNames": {
+					"type": "string",
+					"default": "new;get"
+				},
+				"luaide-lite.emmy.requireLikeFunctions": {
+					"type": "string",
+					"default": "require"
+				},
+				"luaide-lite.emmy.diagnostics.parameterValidation": {
+					"type": "boolean",
+					"default": false,
+					"description": "Code diagnostics: validate param or not.\n代码分析：是否校验参数."
+				},
+				"luaide-lite.emmy.diagnostics.anyTypeCanAssignToAnyDefineType": {
+					"type": "boolean",
+					"default": true,
+					"description": "Code diagnostics: can any type be assigned to other types.\n代码分析：any类型是否可以赋值给其他类型."
+				},
+				"luaide-lite.emmy.diagnostics.defineAnyTypeCanBeAssignedByAnyVariable": {
+					"type": "boolean",
+					"default": true,
+					"description": "Code diagnostics: whether any type can accept the assignment of any variable.\n代码分析：any类型是否可以接受任何变量的赋值."
+				},
+				"luaide-lite.emmy.diagnostics.defineTypeCanReceiveNilType": {
+					"type": "boolean",
+					"default": true,
+					"description": "Code diagnostics: whether nil can be assigned to any definition type.\n代码分析：nil是否可以赋值给任何定义类型."
 				}
 			}
 		}

@@ -70,6 +70,10 @@
 * Conditional breakpoint: [Stable] support expression and hit count.
 
 # [See Changelog] | 详细请查阅版本记录
+## 0.2.7 [2021.12.06]
+* **更新 emmy 的配置选项.**
+* Update configuration of emmy.
+
 ## 0.2.6 [2021.12.02]
 * **更新 emmy 的解析库.**
 * **优化注解补全逻辑（回删多余的命名空间/前缀）.**
@@ -375,6 +379,6 @@
 * vsce login wellshsu
 * vsce publish
 * vsce unpublish (publisher name).(extension name)
-* code --install-extension luaide-lite-0.2.6.vsix
+* code --install-extension luaide-lite-0.2.7.vsix
 * https://marketplace.visualstudio.com/manage/
 * https://code.visualstudio.com/api/working-with-extensions/bundling-extension
