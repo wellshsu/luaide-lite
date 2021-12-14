@@ -1234,11 +1234,16 @@ local function debugger_getBreakVar(body, server)
         local vars = {}
         for k, v in pairs(tvars) do
             if type(v) == "table" then
-                if v.__todebug then
-                    vars[k] = v:__todebug()
-                else
+                -- FIX(20211214)：loop in gettable
+                xpcall(function()
+                    if v.__todebug then
+                        vars[k] = v:__todebug()
+                    else
+                        vars[k] = v
+                    end
+                end, function()
                     vars[k] = v
-                end
+                end)
             else
                 vars[k] = v
             end

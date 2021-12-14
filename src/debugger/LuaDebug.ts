@@ -46,7 +46,7 @@ export class LuaDebug extends DebugSession {
 		response.body.supportsRestartFrame = true
 		response.body.supportsCompletionsRequest = true
 		response.body.supportsExceptionInfoRequest = true
-		response.body.supportsDelayedStackTraceLoading = true
+		response.body.supportsDelayedStackTraceLoading = false // FIX(20211214)：修复堆栈重复的问题
 		response.body.supportsEvaluateForHovers = true
 		this.sendResponse(response)
 
@@ -184,8 +184,7 @@ export class LuaDebug extends DebugSession {
 			let source: string = info.src
 			if (source.endsWith("/lua")) {
 				source = source.replace("/lua", this.fileExtname)
-			}
-			else if (source == "=[C]") {
+			} else if (source == "=[C]") {
 				source = ospath.join(os.tmpdir(), "=[C]")
 				source = source.replace(/\\/g, "/")
 				try {

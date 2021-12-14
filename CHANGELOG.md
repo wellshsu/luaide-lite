@@ -1,3 +1,9 @@
+# 0.2.8 [2021.12.14]
+* **修复调试堆栈显示错误问题(supportsDelayedStackTraceLoading=false).**
+* 更新LuaDebug.lua文件(修复__todebug导致调试异常).
+* Fix incorrect stacktrace request(supportsDelayedStackTraceLoading=false).
+* Update LuaDebug.lua(Fix __todebug error).
+
 # 0.2.7 [2021.12.06]
 * **更新 emmy 的配置选项.**
 * Update configuration of emmy.
