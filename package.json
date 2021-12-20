@@ -3,7 +3,7 @@
 	"displayName": "luaide-lite",
 	"description": "Lua developement and debug tools.",
 	"license": "MIT",
-	"version": "0.2.8",
+	"version": "0.2.9",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/hsu2017/luaide-lite"

@@ -802,29 +802,26 @@ export class TextFormat {
     }
     let cindex = 0
     if (!isLong) {
-      let isLineT: boolean = false
+      let eline: boolean = false
+      let lline: number = 0
       while (this.index < this.length) {
         let charCode: number = this.input.charCodeAt(this.index)
         if (this.isLineTerminator(charCode)) {
-          isLineT = true
-          let peekCharCode = this.input.charCodeAt(this.index + 1)
+          eline = true
+          cindex = this.index
+          let ncharCode = this.input.charCodeAt(this.index + 1)
           // 判断是否换行
-          if (10 === charCode && 13 === peekCharCode) {
+          if (10 === charCode && 13 === ncharCode) {
+            this.index++
+          } else if (13 === charCode && 10 === ncharCode) {
             this.index++
           }
-          if (13 === charCode && 10 === peekCharCode) {
-            this.index++
-          }
-          if (cindex == 0) {
-            cindex = this.index
-          }
+          lline = this.line
           this.line++
           this.lineStart = ++this.index
-          if (afterComment) {
-            break
-          }
+          if (afterComment) break
         } else {
-          if (isLineT) {
+          if (eline && (afterComment || lline != this.line)) { // [换行] [且] （[后缀注释] [或] [新的一行为非注释行]）
             break
           }
           this.index++
@@ -858,7 +855,7 @@ export class TextFormat {
     let character: string = null
     let stringStart: number = 0
     let beginDIndex: number = this.index
-    this.index++ //将位置移到 需要判断的字符  上已阶段以及判断到了 [
+    this.index++ // 将位置移到 需要判断的字符 上一阶段已经判断到了 [
     // 获取等于符号的多少
 
     while ('=' === this.input.charAt(this.index + level)) {

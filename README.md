@@ -70,6 +70,10 @@
 * Conditional breakpoint: [Stable] support expression and hit count.
 
 # [See Changelog] | 详细请查阅版本记录
+## 0.2.9 [2021.12.20]
+* **修复格式化问题(不再剔除注释之间的空行).**
+* Fix format issue(no longer elimate empty line between comments).
+
 ## 0.2.8 [2021.12.14]
 * **修复调试堆栈显示错误问题(supportsDelayedStackTraceLoading=false).**
 * 更新LuaDebug.lua文件(修复__todebug导致调试异常).
@@ -385,6 +389,6 @@
 * vsce login wellshsu
 * vsce publish
 * vsce unpublish (publisher name).(extension name)
-* code --install-extension luaide-lite-0.2.8.vsix
+* code --install-extension luaide-lite-0.2.9.vsix
 * https://marketplace.visualstudio.com/manage/
 * https://code.visualstudio.com/api/working-with-extensions/bundling-extension
