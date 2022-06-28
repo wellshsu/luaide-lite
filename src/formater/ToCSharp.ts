@@ -1,9 +1,10 @@
 import { LToken, LTT, LComment, LRange, LET, LError } from '../parser/LEntity'
 import { ExtMgr } from '../context/ExtMgr';
 import { LFileMgr } from '../provider/LFileMgr';
+import { Helper } from '../context/Helper';
 var querystring = require('querystring')
 
-export class ToTypescript {
+export class ToCSharp {
   private fm: LFileMgr
   private index: number = 0; //当前解析到的位置
   private length: number = 0; //文本总长度
@@ -107,6 +108,8 @@ export class ToTypescript {
     }
     var content = "";
     var newWrap = false;
+    var stypeOf = false;
+    var typeOf = ""
     for (var index = 0; index < this.tokens.length; index++) {
       var token = this.tokens[index];
       var nextToken: LToken = null;
@@ -116,6 +119,97 @@ export class ToTypescript {
       var upToken: LToken = null
       if (index > 0) {
         upToken = this.tokens[index - 1]
+      }
+      var upupToken: LToken = null
+      if (index > 1) {
+        upupToken = this.tokens[index - 2]
+      }
+      // 忽略self./this./self:/this:
+      if (token.type == LTT.Identifier &&
+        (token.value == "self" || token.value == "this") &&
+        (nextToken && nextToken.type == LTT.Punctuator &&
+          (nextToken.value == "." || nextToken.value == ":"))) {
+        index++
+        continue
+      }
+      // 判断函数
+      if (token.type == LTT.Keyword && token.value == "function") {
+        if (content.endsWith("\n") || content == "") {
+          let pmap = new Map<string, string>()
+          let preturn = "void"
+          for (let i = 0; i < token.comments.length; i++) {
+            let ele = token.comments[i]
+            let strs = ele.content.split(" ")
+            if (strs.length > 1) {
+              if (ele.content.indexOf("-@return") >= 0) {
+                preturn = strs[1]
+              } else if (ele.content.indexOf("-@param") >= 0) {
+                let field = strs[1]
+                let type = strs[2]
+                if (type == null) type = "nulltype"
+                field = field.trim()
+                type = type.trim()
+                if (pmap.has(field)) pmap.delete(field)
+                pmap.set(field, type)
+              }
+            }
+          }
+          let fname = ""
+          let fscope = false
+          let fmember = false
+          let foverride = false
+          let fparam = ""
+          for (let j = index + 1; j < this.tokens.length; j++, index++) {
+            let tk = this.tokens[j]
+            if (fscope == false) {
+              if (tk.type == LTT.Punctuator) {
+                fscope = true
+                if (tk.value == ":") {
+                  fmember = true
+                }
+              }
+            } else if (fname == "") {
+              if (tk.type == LTT.Identifier) {
+                fname = tk.value
+                if (fname == "Awake" || fname == "FixedUpdate" || fname == "LateUpdate" ||
+                  fname == "OnCollisionEnter" || fname == "OnCollisionExit" || fname == "OnDestroy" ||
+                  fname == "OnDisable" || fname == "OnEnable" || fname == "OnTriggerEnter" ||
+                  fname == "OnTriggerStay" || fname == "Start" || fname == "Update") {
+                  foverride = true
+                }
+              }
+            } else {
+              if (tk.type == LTT.Identifier) {
+                let t = pmap.get(tk.value)
+                if (t == null) t = "nulltype"
+                fparam += this.translateType(t) + " " + tk.value
+              } else if (tk.type == LTT.Punctuator) {
+                if (tk.value == ")") {
+                  break
+                } else if (tk.value == ",") {
+                  fparam += tk.value
+                }
+              }
+            }
+          }
+          content += Helper.Format("public {0} {1} {2} {3}({4}",
+            fmember ? "" : "static", foverride ? "override" : "",
+            this.translateType(preturn), fname, fparam)
+          this.funTabMCount = 1
+          this.funTabAdd = true
+          continue
+        }
+      }
+      // 判断typeof
+      if (stypeOf) {
+        if (token.value == ")") {
+          stypeOf = false
+        } else if (token.value != "(") {
+          typeOf += token.value
+        }
+      } else if (token.value == "typeof") {
+        stypeOf = true
+        typeOf = ""
       }
       if (token.type == LTT.Keyword) {
         if (token.value == "for") {
@@ -228,13 +322,19 @@ export class ToTypescript {
           this.formatTabCount++;
         }
       }
-
       if (token.type == LTT.Wrap) {
         if (!newWrap) {
-          if (upToken.value != "=") {
+          if (upToken && upToken.value != "=") {
             if (this.attachFuncBracket) {
               this.attachFuncBracket = false
               content += "{"
+            }
+            if (!(content.endsWith("}") || content.endsWith("{") || content.endsWith("\n"))) {
+              if (typeOf != "") {
+                content += " as " + typeOf
+                typeOf = ""
+              }
+              content += ";" // symbol of a new line
             }
             content += "\n"
           }
@@ -293,7 +393,7 @@ export class ToTypescript {
             this.formatTabCount--;
             if (upToken != null && upToken.type != LTT.Wrap) {
               //手动换行
-              content += "\n";
+              content += ";\n";
               for (var i = 0; i < this.formatTabCount; i++) {
                 content += "    "
               }
@@ -452,7 +552,7 @@ export class ToTypescript {
           content += this.getTokenValue(token) + " "
         } else {
           //如果为换行 和 \t 就直接添加
-          content += this.getTokenValue(token);
+          content += this.getTokenValue(token)
         }
         if (token.afterComments != null && token.afterComments.length > 0) {
           token.afterComments.forEach(comment => {
@@ -482,10 +582,10 @@ export class ToTypescript {
       return "null"
     } else if (token.type == LTT.Keyword) {
       if (token.value == "local") {
-        return "let"
+        return "var"
       }
       else if (token.value == "for") {
-        return "for(let"
+        return "for(var"
       }
       else if (token.value == "while") {
         return "while("
@@ -512,24 +612,24 @@ export class ToTypescript {
                 if (parseInt(this.forVar2) == 1) {
                   this.forVar2 = "0"
                 }
-                str = "for(let " + this.forVar1 + " = " + this.forVar2 + ";" + this.forVar1 + " < " + this.forVar3 + ".length;" + this.forVar1 + "++){"
+                str = "for(var " + this.forVar1 + " = " + this.forVar2 + ";" + this.forVar1 + " < " + this.forVar3 + ".length;" + this.forVar1 + "++){"
               } else {
-                str = "for(let " + this.forVar1 + " = " + this.forVar2 + ";" + this.forVar1 + " <= " + this.forVar3 + ";" + this.forVar1 + "++){"
+                str = "for(var " + this.forVar1 + " = " + this.forVar2 + ";" + this.forVar1 + " <= " + this.forVar3 + ";" + this.forVar1 + "++){"
               }
             } else {
               if (this.isForArr) {
-                str = "for(let " + this.forVar1 + " = " + this.forVar2 + ".length - 1;" + this.forVar1 + " >= " + this.forVar3 + ";" + this.forVar1 + "--){"
+                str = "for(var " + this.forVar1 + " = " + this.forVar2 + ".length - 1;" + this.forVar1 + " >= " + this.forVar3 + ";" + this.forVar1 + "--){"
               } else {
-                str = "for(let " + this.forVar1 + " = " + this.forVar2 + ";" + this.forVar1 + " >= " + this.forVar3 + ";" + this.forVar1 + "--){"
+                str = "for(var " + this.forVar1 + " = " + this.forVar2 + ";" + this.forVar1 + " >= " + this.forVar3 + ";" + this.forVar1 + "--){"
               }
             }
           } else {
-            str = "for(let " + this.forVar1 + " in " + this.forVar3 + "){"
+            str = "for(var " + this.forVar1 + " in " + this.forVar3 + "){"
             str += "\n"
             for (var i = 0; i < this.formatTabCount; i++) {
               str += "    "
             }
-            str += "let " + this.forVar2 + " = " + this.forVar3 + "[" + this.forVar1 + "]"
+            str += "var " + this.forVar2 + " = " + this.forVar3 + "[" + this.forVar1 + "]"
           }
           return str
         } else {
@@ -550,9 +650,20 @@ export class ToTypescript {
         return "+"
       } else if (token.value == "~=") {
         return "!="
+      } else if (token.value == ":") {
+        return "."
       }
     }
     return token.value
+  }
+
+  private translateType(ori: string): string {
+    if (ori == "number") {
+      return "int"
+    } else if (ori == "boolean") {
+      return "bool"
+    }
+    return ori
   }
 
   // 重置

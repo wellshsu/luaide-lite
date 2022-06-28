@@ -3,13 +3,13 @@
 	"displayName": "luaide-lite",
 	"description": "Lua developement and debug tools.",
 	"license": "MIT",
-	"version": "0.2.9",
+	"version": "0.3.0",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/hsu2017/luaide-lite"
+		"url": "https://github.com/wellshsu/luaide-lite"
 	},
 	"bugs": {
-		"url": "https://github.com/hsu2017/luaide-lite/issues"
+		"url": "https://github.com/wellshsu/luaide-lite/issues"
 	},
 	"publisher": "wellshsu",
 	"author": {
@@ -261,6 +261,14 @@
 			{
 				"command": "luaide-lite.convertTsText",
 				"title": "To Typescript"
+			},
+			{
+				"command": "luaide-lite.convertCsFile",
+				"title": "Lua/To CSharp"
+			},
+			{
+				"command": "luaide-lite.convertCsText",
+				"title": "To CSharp"
 			}
 		],
 		"menus": {
@@ -293,6 +301,11 @@
 					"command": "luaide-lite.convertTsText",
 					"group": "luaide-lite",
 					"when": "editorHasSelection"
+				},
+				{
+					"command": "luaide-lite.convertCsText",
+					"group": "luaide-lite",
+					"when": "editorHasSelection"
 				}
 			]
 		},
@@ -310,6 +323,11 @@
 			{
 				"command": "luaide-lite.convertTsText",
 				"key": "CTRL+K CTRL+V",
+				"when": "editorHasSelection"
+			},
+			{
+				"command": "luaide-lite.convertCsText",
+				"key": "CTRL+K CTRL+B",
 				"when": "editorHasSelection"
 			}
 		],

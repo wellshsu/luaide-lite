@@ -4,7 +4,7 @@
 [![](https://vsmarketplacebadge.apphb.com/rating-short/wellshsu.luaide-lite.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=wellshsu.luaide-lite)
 * Author: Wells Hsu
 * Email: wellshsu@outlook.com
-* Github: https://github.com/hsu2017/luaide-lite
+* Github: https://github.com/wellshsu/luaide-lite
 
 # Features | 功能特性
 * **有问题请在github->issue中反馈，不定期查看.**
@@ -25,6 +25,7 @@
 ## 【辅助功能】
 * 解析库切换: 设置 'luaide-lite.core' 以指定代码解析工具, **emmy-使用emmylua库解析工程(推介使用)**, legacy-使用既有版本解析工程(不再维护).
 * **To Typescript: 将Lua代码转换为Typescript.**
+* **To CSharp: 将Lua代码转换为CSharp.**
 * 模板文件: 在设置中添加 'templateDir' 和 'templateDefine' 以指定模板文件目录以及全局文本替换字段, 在工程结构目录右键选择 'Lua/New Template' 以创建模板文件.
 
 # FAQ | 常见问题
@@ -70,6 +71,10 @@
 * Conditional breakpoint: [Stable] support expression and hit count.
 
 # [See Changelog] | 详细请查阅版本记录
+## 0.3.0 [2022.06.28]
+* 新增 'To CSharp' 转换功能, 你可以使用此功能将Lua代码转换为CSharp.
+* Add 'To CSharp', use it to translate lua to csharp.
+
 ## 0.2.9 [2021.12.20]
 * **修复格式化问题(不再剔除注释之间的空行).**
 * Fix format issue(no longer elimate empty line between comments).
@@ -389,6 +394,6 @@
 * vsce login wellshsu
 * vsce publish
 * vsce unpublish (publisher name).(extension name)
-* code --install-extension luaide-lite-0.2.9.vsix
+* code --install-extension luaide-lite-0.3.0.vsix
 * https://marketplace.visualstudio.com/manage/
 * https://code.visualstudio.com/api/working-with-extensions/bundling-extension

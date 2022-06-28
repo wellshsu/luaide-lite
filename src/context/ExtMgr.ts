@@ -11,6 +11,7 @@ import { PvdLuats } from "../provider/PvdLuats"
 import { Helper } from "./Helper"
 import { HighlightG } from "../formater/HighlightG"
 import { PvdFormat } from "../provider/PvdFormat"
+import { PvdLuacs } from "../provider/PvdLuacs"
 
 export class ExtMgr {
     public static LUA_MODE: vscode.DocumentFilter = { language: "lua", scheme: "file" }
@@ -64,6 +65,8 @@ export class ExtMgr {
         { label: "luaide-lite.createTemplate", desc: "Create template", func: PvdTemplate.process },
         { label: "luaide-lite.convertTsFile", desc: "Translate lua to typescript", func: PvdLuats.processFile },
         { label: "luaide-lite.convertTsText", desc: "Convert lua to typescript", func: PvdLuats.processText },
+        { label: "luaide-lite.convertCsFile", desc: "Translate lua to csharp", func: PvdLuacs.processFile },
+        { label: "luaide-lite.convertCsText", desc: "Convert lua to csharp", func: PvdLuacs.processText },
         { label: "luaide-lite.openRes", desc: "Open res folder", func: ExtMgr.openRes },
         { label: "luaide-lite.about", desc: "About luaide-lite", func: ExtMgr.showAbout },
     ]

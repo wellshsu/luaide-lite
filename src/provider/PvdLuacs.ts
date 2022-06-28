@@ -2,12 +2,12 @@ import { Stats } from "fs"
 import { Uri } from "vscode"
 import { ExtMgr } from '../context/ExtMgr'
 import vscode = require('vscode')
-import { ToTypescript } from "../formater/ToTypescript";
+import { ToCSharp } from "../formater/ToCSharp";
 
 var libfs = require("fs")
 var rd = require('rd');
 
-export class PvdLuats {
+export class PvdLuacs {
     public static processFile(e) {
         var path = e.fsPath
         var count = 0
@@ -18,8 +18,8 @@ export class PvdLuats {
                     // UTF-8 Without BOM
                     vscode.workspace.openTextDocument(Uri.file(f)).then(
                         doc => {
-                            var format: ToTypescript = new ToTypescript(doc.getText())
-                            f = f.replace(".lua", ".ts")
+                            var format: ToCSharp = new ToCSharp(doc.getText())
+                            f = f.replace(".lua", ".cs")
                             libfs.writeFileSync(f, format.formatContent, "utf8")
                         }
                     ).then(function (event) {
@@ -46,13 +46,18 @@ export class PvdLuats {
     }
 
     public static processText(e) {
-        PvdLuats.edit((text) => {
-            var to = new ToTypescript(text)
-            var content = to.formatContent
-            ExtMgr.typescriptDefine.forEach((v, k) => {
-                content = content.replace(new RegExp(k, "gm"), v)
-            })
-            return content
+        PvdLuacs.edit((text) => {
+            try {
+                var to = new ToCSharp(text)
+                var content = to.formatContent
+                ExtMgr.typescriptDefine.forEach((v, k) => {
+                    content = content.replace(new RegExp(k, "gm"), v)
+                })
+                return content
+            } catch (e) {
+                console.log(e)
+                throw e
+            }
         })
     }
 

@@ -1,3 +1,7 @@
+# 0.3.0 [2022.06.28]
+* 新增 'To CSharp' 转换功能, 你可以使用此功能将Lua代码转换为CSharp.
+* Add 'To CSharp', use it to translate lua to csharp.
+
 # 0.2.9 [2021.12.20]
 * **修复格式化问题(不再剔除注释之间的空行).**
 * Fix format issue(no longer elimate empty line between comments).
