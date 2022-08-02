@@ -3,7 +3,7 @@
 	"displayName": "luaide-lite",
 	"description": "Lua developement and debug tools.",
 	"license": "MIT",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/wellshsu/luaide-lite"
@@ -554,5 +554,9 @@
 		"vscode-debugadapter": "^1.31.0",
 		"vscode-debugprotocol": "^1.31.0",
 		"vscode-languageclient": "^5.1.0"
+	},
+	"volta": {
+		"node": "16.16.0",
+		"yarn": "1.19.2"
 	}
 }

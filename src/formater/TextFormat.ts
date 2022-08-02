@@ -926,6 +926,7 @@ export class TextFormat {
       case 'b': this.index++; return '\\b'
       case 'f': this.index++; return '\\f'
       case '"': this.index++; return '\\"'
+      case '\'': this.index++; return '\\\''
       case '\\': this.index++; return '\\' + '\\'
       // Skips the following span of white-space.
       case 'z': this.index++; this.skipWhiteSpace(false); return ''
