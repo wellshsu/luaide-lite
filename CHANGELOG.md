@@ -1,3 +1,7 @@
+# 0.3.1 [2022.08.02]
+* 修复字符串格式化单引号转义错误.
+* Fix string that contains single quote format issue(escaping).
+
 # 0.3.0 [2022.06.28]
 * 新增 'To CSharp' 转换功能, 你可以使用此功能将Lua代码转换为CSharp.
 * Add 'To CSharp', use it to translate lua to csharp.
