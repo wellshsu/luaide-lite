@@ -545,7 +545,7 @@
 		"@types/node": "^7.0.43",
 		"@types/socket.io": "^1.4.27",
 		"@types/socket.io-client": "^1.4.27",
-		"mocha": "^2.3.3",
+		"mocha": "^10.1.0",
 		"ts-loader": "^5.3.3",
 		"typescript": "^2.0.3"
 	},
