@@ -470,7 +470,7 @@ export class LuaDebug extends DebugSession {
 			let serverPathsCount = serverPaths.length
 			let clientPathsCount = clientPaths.length
 			while (true) {
-				if (clientPaths[clientPathsCount--] != serverPaths[serverPathsCount--]) {
+				if (clientPaths[--clientPathsCount] != serverPaths[--serverPathsCount]) {
 					isHit = false
 					break
 				} else {
