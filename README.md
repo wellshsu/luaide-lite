@@ -376,7 +376,6 @@
 * UTF8 BOM content will not be formated, please use 'Lua/Format File(s)' to convert to UFT8.
 
 # Ref | 引用
-* Emoji: http://www.fhdq.net/
 * VSCode: https://code.visualstudio.com/docs
 * LDoc: https://github.com/stevedonovan/LDoc
 * rd: https://www.npmjs.com/package/rd
